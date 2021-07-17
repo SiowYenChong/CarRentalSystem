@@ -44,7 +44,10 @@ public class Input {
 			inputFlush();
 			print(input);
 			try {
+				
 				return Integer.valueOf(inputString().trim()).intValue();	//trim-doesnt matter if space input
+			
+				
 			}catch(Exception e) {
 				System.out.println("Input is not integer.");
 			}

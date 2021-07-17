@@ -17,7 +17,15 @@ public class CarRegistration {
 	String regNumber;
 	double basePrice;
 	double carRental;
+	String regID;
 	
+	//source>getter,setter
+	public String getRegID() {
+		return regID;
+	}
+	public void setRegID(String regID) {
+		this.regID = regID;
+	}
 	public String getCarBrand() {
 		return carBrand;
 	}
@@ -62,9 +70,9 @@ public class CarRegistration {
 	}
 	@Override
 	public String toString() {
-		return "CarRegistration [carBrand=" + carBrand + ", carModel=" + carModel + ", carNumber=" + carNumber
-				+ ", carDescription=" + carDescription + ", regNumber=" + regNumber + ", basePrice=" + basePrice
-				+ ", carRental=" + carRental + "]";	  
+		return "CarRegistration [regID= " +regID+ ", regNumber=" +regNumber+ ", carBrand=" + carBrand + ", carModel=" + carModel + ", carNumber=" + carNumber
+				+ ", carDescription=" + carDescription + ", basePrice=%.2f" + basePrice
+				+ ", carRental=%.2f" + carRental + "]";	  
 	}
 	
 

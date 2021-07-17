@@ -12,7 +12,8 @@ public class Main {
 		System.out.println("3. Register User");
 		System.out.println("4. Register Car");
 		System.out.println("5. Rent a Car");
-		System.out.println("6. Logout");
+		System.out.println("6. Admin");
+		System.out.println("7. Logout");
 
 		do {
 			inputValue=Input.inputInt("Select option: ");
@@ -25,16 +26,23 @@ public class Main {
 				break;
 			case 3:
 				System.out.print("Calling 3.Register User..");
-				CarRegistrationMenu obj = new CarRegistrationMenu();
-				obj.doRegistration();
+				CustomerMenu custObj = new CustomerMenu();
+				custObj.customerRegistration();
 				break;
 			case 4:
-				System.out.print("Calling 4.Rent a Car..");
+				System.out.print("Calling 4.Register Car..");
+				CarRegistrationMenu carObj = new CarRegistrationMenu();
+				carObj.doRegistration();
 				break;
 			case 5:
-				System.out.print("Calling 5.Logout..");
+				System.out.print("Calling 5.Rent a Car..");
 				break;
-			//case 6:
+			case 6:
+				System.out.print("Calling 6.Admin..");	//show number of registered customers, registered cars
+				break;
+			case 7:
+				System.out.print("Calling 7.Logout..");
+				break;
 			default:
 				System.out.print("Invalid option!");
 				break;

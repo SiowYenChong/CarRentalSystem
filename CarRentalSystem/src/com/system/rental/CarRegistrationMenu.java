@@ -6,12 +6,14 @@ import java.util.Scanner;
 
 import com.system.model.CarRentalModel;
 import com.system.pojo.CarRegistration;
+import com.system.util.SequenceGenerator;
 public class CarRegistrationMenu {
 	private String brandName ;
 	private String modelName ;
 	private String plateNumber ;
 	private String regNumber ;
 	private double basePrice ;
+	private String desc ;
 	
 	public static void main(String[] args) {
 		CarRegistrationMenu obj = new CarRegistrationMenu();
@@ -29,8 +31,11 @@ public class CarRegistrationMenu {
 		plateNumber = scanner.nextLine();
 		System.out.println("Enter Car Registration number: ");
 		regNumber = scanner.nextLine();
+		System.out.println("Enter Car Description: ");
+		desc = scanner.nextLine();
 		System.out.println("Enter Car Base Price: ");
 		basePrice = scanner.nextDouble();
+		
 		
 		//get memory to class    instantiate
 		CarRegistration carReg = new CarRegistration ();		//ctrl-space import a class
@@ -55,6 +60,14 @@ public class CarRegistrationMenu {
 		if(basePrice != 0) {		//not empty and not null
 			carReg.setBasePrice(basePrice);	
 		}
+		if(carReg != null) {
+			carReg.setRegID(SequenceGenerator.getCarNext());		//bring in sequence method
+		}
+		if(desc != null && !"".equals(desc)) {		//not empty and not null
+			carReg.setCarDescription(desc);	
+		}
+		
+		
 		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		//import list
 		if(map.get("regList")!=null) { 	//registration details
 			List list = map.get("regList");

@@ -13,4 +13,5 @@ public class CarRentalModel {
 	public static Map<String,List<CarRegistration>> reg = new HashMap<>(); 
 	//Map->collection: add sth to memory
 	public static Map<String,List<Customer>> user = new HashMap<>();
+	public static Map<String,Boolean> loginUsers = new HashMap<>();
 }

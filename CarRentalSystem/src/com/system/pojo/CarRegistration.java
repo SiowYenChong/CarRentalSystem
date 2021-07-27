@@ -1,5 +1,9 @@
 package com.system.pojo; //plain old java object
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 public class CarRegistration {
 
 	/*-carBrand:String
@@ -68,11 +72,18 @@ public class CarRegistration {
 	public void setCarRental(double carRental) {
 		this.carRental = carRental;
 	}
+	public static String getFormat(double input) {
+		DecimalFormat df = new DecimalFormat("###.00");
+		BigDecimal bd = new BigDecimal(input);
+		return df.format(input);
+		
+	}
+	
 	@Override
 	public String toString() {
 		return "CarRegistration [regID= " +regID+ ", regNumber=" +regNumber+ ", carBrand=" + carBrand + ", carModel=" + carModel + ", carNumber=" + carNumber
-				+ ", carDescription=" + carDescription + ", basePrice=%.2f" + basePrice
-				+ ", carRental=%.2f" + carRental + "]";	  
+				+ ", carDescription=" + carDescription + ", basePrice="+getFormat(basePrice)
+				+ ", carRental="+getFormat(carRental) + "]";	  
 	}
 	
 

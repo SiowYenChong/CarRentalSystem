@@ -22,7 +22,7 @@ public class CarRegistrationMenu {
 	}
 	public void doRegistration() {
 		Scanner scanner = new Scanner(System.in);
-		System.out.println("WELCOME TO CAR REGISTRATION MENU");
+		System.out.println("\nWELCOME TO CAR REGISTRATION MENU");
 		System.out.println("Enter Car Brand name: ");
 		brandName = scanner.nextLine();
 		System.out.println("Enter Car Model name: ");
@@ -76,16 +76,152 @@ public class CarRegistrationMenu {
 		}else {
 			List list = new ArrayList();		//ctrl space
 			list.add(carReg);
-			map.put("regList",list);
+			//map.put("regList",list);
+			map.put(carReg.getRegID(), list);
 		}
 		System.out.println("The details are "+map);
 	}
 	public boolean checkAlphabet(String input) {
+		Scanner scanner = new Scanner(System.in);
 		boolean result = false;
 		
 		result = input.matches(".*\\d.*");
 		return !result;
 		
 	}
-	
+	public void carRegMenu() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("\nSelect option: ");
+		System.out.println("1. REGISTER NEW CAR");
+		System.out.println("2. EDIT EXISTING CAR REGISTRATION");
+		System.out.println("3. DELETE EXISITNG CAR REGISTRATION");
+		int input = scanner.nextInt();
+		
+		if(input==1) {
+			doRegistration();
+		}else if(input==2) {
+			editCarReg();
+		}else if(input == 3) {
+			
+		}else {
+			System.out.println("INVALID OPTION!");
+		}
+	}
+	public void editCarReg() {
+		Scanner scanner = new Scanner(System.in);
+		Map<String, List<CarRegistration>> map = CarRentalModel.reg;
+		
+		System.out.println("Enter Car Registration ID: ");
+		String input = scanner.nextLine();
+		if(map.get(input) != null) {
+			List obj = map.get(input);			//obj = object
+			System.out.println("Values are "+obj);
+		}else {
+			System.out.println("You haven't register car.Kindly register car first.");
+		}
+		
+	}
+	public void doEdit(String regID,String msg) {		//msg=message
+		Scanner scanner = new Scanner(System.in);
+		Map<String, List<CarRegistration>> map = CarRentalModel.reg;
+		List obj = map.get(regID);
+		System.out.println(msg);
+		String input = scanner.nextLine();
+		
+	}
+	public void editOption(String regID) {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Select car properties to be edited: ");
+		System.out.println("1. Registration number");
+		System.out.println("2. Car Brand");
+		System.out.println("3. Car Model");
+		System.out.println("4. Car Number");
+		System.out.println("5. Car Description");
+		System.out.println("6. Base Price");
+		System.out.println("7. Edit All");
+		int input = scanner.nextInt();
+		
+		Map<String, List<CarRegistration>> map = CarRentalModel.reg;
+		CarRegistration obj = map.get(regID).get(0);			//get first value of car registration
+		
+		String inputValue = "";
+		switch(input) {
+			case 1:
+				//editCarRegNum(obj);
+				System.out.println("Confirm car registration number to edit: ");
+				inputValue = scanner.nextLine();
+				obj.setRegNumber(inputValue);
+				break;
+			case 2:
+				editCarBrand(scanner, obj);	
+				break;
+			case 3:
+				editCarModel(scanner, obj);
+				break;
+			case 4:
+				editCarNumber(scanner, obj);
+				break;
+			case 5:
+				editCarDescription(scanner, obj);
+				break;
+			case 6:
+				editCarBasePrice(scanner, obj);
+				break;
+			case 7:
+				editCarRegNum(obj);
+				editCarBrand(scanner, obj);
+				editCarModel(scanner, obj);
+				editCarNumber(scanner, obj);
+				editCarDescription(scanner, obj);
+				editCarBasePrice(scanner, obj);
+				break;
+			default:
+				System.out.println("INVALID OPTION!");
+				break;
+				
+				
+				
+		}
+		List <CarRegistration>list = new ArrayList(); 
+		list.add(obj);
+		map.put(regID, list);
+		System.out.println("Map "+map);
+	}
+	private void editCarRegNum(CarRegistration obj) {
+		String inputValue;
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Confirm car registration number to edit: ");
+		inputValue = scanner.nextLine();
+		obj.setRegNumber(inputValue);
+	}
+	private void editCarBrand(Scanner scanner, CarRegistration obj) {
+		String inputValue;
+		System.out.println("Confirm car brand to edit: ");
+		inputValue = scanner.nextLine();
+		obj.setCarBrand(inputValue);
+	}
+	private void editCarModel(Scanner scanner, CarRegistration obj) {
+		String inputValue;
+		System.out.println("Confirm car model to edit: ");
+		inputValue = scanner.nextLine();
+		obj.setCarModel(inputValue);
+	}
+	private void editCarNumber(Scanner scanner, CarRegistration obj) {
+		String inputValue;
+		System.out.println("Confirm car number to edit: ");
+		inputValue = scanner.nextLine();
+		obj.setCarNumber(inputValue);
+	}
+	private void editCarDescription(Scanner scanner, CarRegistration obj) {
+		String inputValue;
+		System.out.println("Confirm car description to edit: ");
+		inputValue = scanner.nextLine();
+		obj.setCarDescription(inputValue);
+	}
+	private void editCarBasePrice(Scanner scanner, CarRegistration obj) {
+		String inputValue;
+		System.out.println("Confirm car base price to edit: ");
+		inputValue = scanner.nextLine();
+		obj.setBasePrice(Double.parseDouble(inputValue));		//string -> double
+	}
 }

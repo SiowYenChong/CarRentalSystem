@@ -1,0 +1,3 @@
+Toyota,Vios,AW123,1001,Used 2 years,100000
+Honda,City,QE123,1002,No damage,500000
+Mazda,5,RD123,1003,Good condition,600000

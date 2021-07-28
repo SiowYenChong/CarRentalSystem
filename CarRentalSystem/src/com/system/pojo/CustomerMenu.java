@@ -16,7 +16,6 @@ import com.system.model.CarRentalModel;
 import com.system.pojo.CarRegistration;
 import com.system.pojo.Customer;
 import com.system.util.SequenceGenerator;
-import com.system.util.Utility;
 
 public class CustomerMenu {
 	//private String customerID;
@@ -25,81 +24,76 @@ public class CustomerMenu {
 		private String customerMobileNumber;
 		private String customerEmail;
 		private String customerAddress;
-
-		/*public static void main(String[] args)
+		
+		/*public static void main(String[] args) 
 		{
 			CustomerMenu cus = new CustomerMenu();
 			System.out.println(cus.checkAlphabet("Claire"));
 
 		}*/
-
-		public void customerRegistration(String emailID)
+		
+		public void customerRegistration() 
 		{
-			//here
-			String result = Utility.validUser(emailID);
-			if(result.equals("")) {
-				return;
-			}
-
 			Scanner scanner = new Scanner(System.in);
-			System.out.println("\nWELCOME TO CUSTOMER REGISTRATION MENU");
-
+			
+			System.out.println("WELCOME TO CUSTOMER REGISTRATION MENU");
+			
 			//this must be changed to auto-generated format
 			//System.out.println("Customer ID: ");
 			//customerID = scanner.nextLine();
-
-			/*for (int id = 0; id < 11; id++)
+			
+			/*for (int id = 0; id < 11; id++)     
 			{
 				//System.out.printf("%d\t%d\t%d", "CUST", id);
 				System.out.printf("CUST", id);
 			}*/
-
+			
 			System.out.println("Name: ");
 			customerName = scanner.nextLine();
-
+			
 			System.out.println("DOB (dd/mm/yy):  ");
 			customerBirthDate = scanner.nextLine();
-
+			
 			System.out.println("Mobile number: ");
 			customerMobileNumber = scanner.nextLine();
-
+			
 			System.out.println("Email: ");
 			customerEmail = scanner.nextLine();
-
+			
 			System.out.println("Address: ");
 			customerAddress = scanner.nextLine();
-
+			
 			//get memory to class    instantiate
 			Customer cust = new Customer();		//ctrl-space import a class
 			//ctrl-space
-
+			
 			if(customerName != null && !"".equals(customerName)) //not empty and not null
-			{
+			{		
 				if(checkAlphabet(customerName)){
-					cust.setCustomerName(customerName);
+					cust.setCustomerName(customerName);	
 				}else{
 					System.out.println("Name should not contain digits");
 				}
-
+						
 			}
-
-			if(customerBirthDate != null && !"".equals(customerBirthDate))
-			{
-				cust.setCustomerBirthDate(customerBirthDate);
+					
+			if(customerBirthDate != null && !"".equals(customerBirthDate)) 
+			{		
+				cust.setCustomerBirthDate(customerBirthDate);	
 			}
-
-			if(customerMobileNumber != null && !"".equals(customerMobileNumber))
-			{
-				cust.setCustomerMobileNumber(customerMobileNumber);
+					
+			if(customerMobileNumber != null && !"".equals(customerMobileNumber)) 
+			{		
+				cust.setCustomerMobileNumber(customerMobileNumber);	
 			}
-
-			if(customerEmail != null && !"".equals(customerEmail))
-			{
-				cust.setCustomerEmail(customerEmail);
+					
+			if(customerEmail != null && !"".equals(customerEmail)) 
+			{		
+				cust.setCustomerEmail(customerEmail);	
 			}
-
-			if(customerAddress != null && !"".equals(customerAddress))
-			{
+					
+			if(customerAddress != null && !"".equals(customerAddress)) 
+			{		
 				cust.setCustomerAddress(customerAddress);
 			}
 			if(cust != null) {
@@ -117,16 +111,16 @@ public class CustomerMenu {
 				user.put("userList",userList);
 			}
 			System.out.println("The customer details are "+user);
-
+			
 			//scanner.close();
 		}
-
+		
 		public boolean checkAlphabet(String input) {
 			boolean result = false;
-
+			
 			result = input.matches(".\\d.");
 			return !result;
-
+			
 		}
 
 }

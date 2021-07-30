@@ -64,4 +64,11 @@ public class Utility {
 			}
 		}
 	}
+	public static void storeData(Map <String,List <CarRegistration>> map, String fileName)throws Exception {
+		for(Map.Entry <String,List<CarRegistration>> set: map.entrySet()) {
+			String regID = set.getKey();
+			CarRegistration car = set.getValue().get(0);
+			//continue
+		}
+	}
 }

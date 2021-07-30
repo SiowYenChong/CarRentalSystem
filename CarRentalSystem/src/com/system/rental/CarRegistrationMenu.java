@@ -160,7 +160,7 @@ public class CarRegistrationMenu {
 					obj.setRegNumber(inputValue);
 					break;
 				case 2:
-					editCarBrand(scanner, regID, obj);
+					editCarBrand(regID);
 					List <CarRegistration>list = new ArrayList(); 
 					list.add(obj);
 					map.put(regID, list);
@@ -179,8 +179,8 @@ public class CarRegistrationMenu {
 					editCarBasePrice(scanner, obj);
 					break;
 				case 7:
-					editCarRegNum(obj);
-					editCarBrand(scanner, inputValue, obj);
+					//editCarRegNum(obj);
+					editCarBrand(inputValue);
 					editCarModel(scanner, obj);
 					editCarNumber(scanner, obj);
 					editCarDescription(scanner, obj);
@@ -194,14 +194,102 @@ public class CarRegistrationMenu {
 		}while(true);
 		
 	}
-	private void editCarRegNum(CarRegistration obj) {
+	public void editCarRegNum(String regID) {
+		Scanner scanner1 = new Scanner(System.in);
+		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		
 		String inputValue;
-		Scanner scanner = new Scanner(System.in);
-		System.out.println("Confirm car registration number to edit: ");
-		inputValue = scanner.nextLine();
+		System.out.println("Enter new car registration number : ");
+		inputValue = scanner1.nextLine();
+		System.out.println("Reg ID"+regID);
+		CarRegistration obj = map.get(regID).get(0);
 		obj.setRegNumber(inputValue);
+		List<CarRegistration> list = new ArrayList<>();
+		list.add(obj);
+		map.put(regID, list);
+		System.out.println("after edit map is "+map);
 	}
-	private void editCarBrand(Scanner scanner, String regID, CarRegistration obj) {
+	public void editCarModel(String regID) {
+		Scanner scanner1 = new Scanner(System.in);
+		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		
+		String inputValue;
+		System.out.println("Enter new car model : ");
+		inputValue = scanner1.nextLine();
+		System.out.println("Reg ID"+regID);
+		CarRegistration obj = map.get(regID).get(0);
+		obj.setCarModel(inputValue);
+		List<CarRegistration> list = new ArrayList<>();
+		list.add(obj);
+		map.put(regID, list);
+		System.out.println("after edit map is "+map);
+	}
+	public void editCarNumber(String regID) {
+		Scanner scanner1 = new Scanner(System.in);
+		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		
+		String inputValue;
+		System.out.println("Enter new car number : ");
+		inputValue = scanner1.nextLine();
+		System.out.println("Reg ID"+regID);
+		CarRegistration obj = map.get(regID).get(0);
+		obj.setCarNumber(inputValue);
+		List<CarRegistration> list = new ArrayList<>();
+		list.add(obj);
+		map.put(regID, list);
+		System.out.println("after edit map is "+map);
+	}
+	public void editCarDescription(String regID) {
+		Scanner scanner1 = new Scanner(System.in);
+		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		
+		String inputValue;
+		System.out.println("Enter new car decription : ");
+		inputValue = scanner1.nextLine();
+		System.out.println("Reg ID"+regID);
+		CarRegistration obj = map.get(regID).get(0);
+		obj.setCarDescription(inputValue);
+		List<CarRegistration> list = new ArrayList<>();
+		list.add(obj);
+		map.put(regID, list);
+		System.out.println("after edit map is "+map);
+	}
+	public void editCarBasePrice(String regID) {
+		Scanner scanner1 = new Scanner(System.in);
+		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		
+		String inputValue;
+		System.out.println("Enter new car base price : ");
+		inputValue = scanner1.nextLine();
+		System.out.println("Reg ID"+regID);
+		CarRegistration obj = map.get(regID).get(0);
+		obj.setBasePrice(Double.parseDouble(inputValue));
+		List<CarRegistration> list = new ArrayList<>();
+		list.add(obj);
+		map.put(regID, list);
+		System.out.println("after edit map is "+map);
+	}
+	public void editAll(String regID) {
+		editCarModel(regID);
+		
+	}
+	public void deleteCar(String regID) {
+		Scanner scanner1 = new Scanner(System.in);
+		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		
+		String inputValue;
+		System.out.println("Are you sure to delete "+regID+" : (Y/N)");
+		inputValue = scanner1.nextLine();
+		if(inputValue.equalsIgnoreCase("Y")) {
+			try {
+				map.remove(regID);
+				System.out.println("Car has been deleted successfully.");
+			}catch(Exception e) {
+				System.out.println("The registration ID is not valid.");
+			}	
+		}else if(inputValue.equalsIgnoreCase("N")) {
+			System.out.println("You selected not to delete car.");
+		}else {
+			System.out.println("INVALID OPTION! Please try again.");
+		}
+		System.out.println("After deletion, map is "+map);
+
+	}
+	/*private void editCarBrand(String regID, CarRegistration obj) {
 		Scanner scanner1 = new Scanner(System.in);
 		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		
 		String inputValue;
@@ -210,7 +298,28 @@ public class CarRegistrationMenu {
 		System.out.println("Reg ID"+regID);
 		obj = map.get(regID).get(0);
 		obj.setCarBrand(inputValue);
+	}*/
+	public String getRegID() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Confirm car registration number to edit: ");
+		String inputValue = scanner.nextLine();
+		return inputValue;
 	}
+	public void editCarBrand(String regID) {
+		Scanner scanner1 = new Scanner(System.in);
+		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		
+		String inputValue;
+		System.out.println("Enter new car brand : ");
+		inputValue = scanner1.nextLine();
+		System.out.println("Reg ID"+regID);
+		CarRegistration obj = map.get(regID).get(0);
+		obj.setCarBrand(inputValue);
+		List<CarRegistration> list = new ArrayList<>();
+		list.add(obj);
+		map.put(regID, list);
+		System.out.println("after edit map is "+map);
+	}
+
 	private void editCarModel(Scanner scanner, CarRegistration obj) {
 		String inputValue;
 		System.out.println("Confirm car model to edit: ");

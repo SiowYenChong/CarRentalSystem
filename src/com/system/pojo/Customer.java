@@ -17,7 +17,15 @@ public class Customer
 	String customerEmail;
 	String customerAddress;
 	double carRental;
+	String password;
 	
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	public String getCustomerID() 
 	{
 		return customerID;

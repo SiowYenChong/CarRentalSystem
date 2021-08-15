@@ -19,22 +19,22 @@ import com.system.pojo.CarRegistration;
 import com.system.util.Utility;
 
 public class CarRentalProcess {
-	Map <String,List<CarRegistration>> map = null;
+	
 	public Map <String,List<CarRegistration>> getAvailableCars() throws Exception{
-		if(map != null) {
-			map = Utility.loadData();
-		}
+			Map <String,List<CarRegistration>> map = Utility.loadData();
 		for(Map.Entry <String,List<CarRegistration>> set: map.entrySet()) {
 			String key = set.getKey();
 			List<CarRegistration> cars = set.getValue();
 			if(!cars.isEmpty()) {
 				CarRegistration car = cars.get(0);
 				if(car.getEndDate() != null) {
+					String hiredBy = (null != car.getUserID())? "Hired by = "+ car.getUserID(): "";
 					System.out.println( "regID = " + car.getRegID()+ ", regNumber = " +car.getRegNumber()+ ", carBrand = " + car.getCarBrand() + 
 					"\n carModel = " + car.getCarModel() + ", carNumber = " + car.getCarNumber()+ " carDescription = " + car.getCarDescription() + 
 					"\n  price(Per Hour) = "+ car.getFormat(car.getBasePrice())+ ", carRental = "+ car.getFormat(car.getCarRental())+ 
 					"\n startDate = "+ car.formatDate(""+car.getStartDate()) + ", endDate = " + car.formatDate(""+car.getEndDate())+
 					"\n This car is ONLY AVAILABLE BEFORE "+ car.formatDate(""+car.getStartDate()) + " OR AFTER "+ car.formatDate(""+car.getEndDate())+
+					"\n " + hiredBy + 
 					"\n -------------------------------------------------------------------------------------------------------");
 				}else {
 					System.out.println(car);
@@ -81,7 +81,8 @@ public class CarRentalProcess {
 		}
 		return stDate;
 	}
-	public boolean validateCar(String regID) {
+	public boolean validateCar(String regID) throws Exception{
+		Map <String,List<CarRegistration>> map = Utility.loadData();
 		CarRegistration car = map.get(regID).get(0);
 		return compareCurrentDate(car.getEndDate());
 	}

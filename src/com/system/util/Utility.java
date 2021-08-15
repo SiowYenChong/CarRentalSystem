@@ -62,18 +62,21 @@ public class Utility {
 			carReg.setCarModel(dataArray[2]);
 			carReg.setCarNumber(dataArray[3]);
 			carReg.setRegNumber(dataArray[4]);
+			carReg.setCarDescription(dataArray[5]);
 			carReg.setBasePrice(Double.parseDouble(dataArray[6]));	//Double.parseDouble	
 			carReg.setRegID(seq + counter++);
-			carReg.setCarDescription(dataArray[5]);
-			if(dataArray.length > 6 && !"null".equals(dataArray[7])) {
-				LocalDateTime datetime = LocalDateTime.parse(dataArray[7]);
-				carReg.setStartDate(datetime);
+			if(dataArray.length > 7) {
+				carReg.setUserID(dataArray[7]);
 			}
 			if(dataArray.length > 7 && !"null".equals(dataArray[8])) {
 				LocalDateTime datetime = LocalDateTime.parse(dataArray[8]);
+				carReg.setStartDate(datetime);
+			}
+			if(dataArray.length > 8 && !"null".equals(dataArray[9])) {
+				LocalDateTime datetime = LocalDateTime.parse(dataArray[9]);
 				carReg.setEndDate(datetime);
 			}
-			String rental = (dataArray.length > 8 && dataArray[9] != null && !"null".equals(dataArray[9]))? dataArray[9]: "0.0";
+			String rental = (dataArray.length > 9 && dataArray[10] != null && !"null".equals(dataArray[10]))? dataArray[10]: "0.0";
 			carReg.setCarRental(Double.parseDouble(rental));
 			List list = new ArrayList();				//ctrl space
 			list.add(carReg);
@@ -140,6 +143,7 @@ public class Utility {
 		String email;
 		String address;
 		String data = "";
+		String password = "";
 		Customer cust;
 		for(Map.Entry <String,List<Customer>> set: map.entrySet()) {
 			//System.out.println("Testing");
@@ -150,7 +154,8 @@ public class Utility {
 			phoneNum = cust.getCustomerMobileNumber();
 			email = cust.getCustomerEmail();
 			address = cust.getCustomerAddress();
-			data = data + custID + ";" + name + ";" + birthDate + ";" + phoneNum + ";" + email + ";" + address + "\n";
+			password = cust.getPassword();
+			data = data + custID + ";" + name + ";" + birthDate + ";" + phoneNum + ";" + email + ";" + address + ";" + password +"\n";
 			Path path = Paths.get(fileName);		//Get old obj from file 
 			Files.write(path, data.getBytes());		//getBytes() = convert data to byte
 		}
@@ -160,15 +165,24 @@ public class Utility {
 		Map<String, List<Customer>> map = CarRentalModel.user;
 		String custID;
 		Customer cust = null;
+		boolean isExist = false; 
 		for(Map.Entry <String,List<Customer>> set: map.entrySet()) {
 			//System.out.println("Testing");
 			custID = set.getKey();
 			cust = set.getValue().get(0);
 			if(emailID.equals(cust.getCustomerEmail())) {
+				isExist = true;
 				break;
 			}
 		}
+		if(isExist) {
+			
+		}else {
+			cust = new Customer();
+			cust.setCustomerID("");
+		}
 		return cust;
+		
 	}
 	public static void loadCustData(String fileName)throws Exception {		//file handling
 		File file = new File (fileName);

@@ -18,8 +18,10 @@ public class CustomerMenu
 		private String customerMobileNumber;
 		private String customerEmail;
 		private String customerAddress;
+		private String customerPassword;
+		private String reenterPassword;
 
-		public String customerRegistration(String emailID)
+		public String customerRegistration(String emailID) throws Exception
 		{
 			//here
 			String result = Utility.validUser(emailID);
@@ -31,6 +33,21 @@ public class CustomerMenu
 			Scanner scanner = new Scanner(System.in);
 			System.out.println("\nWELCOME TO CUSTOMER REGISTRATION MENU");
 
+			System.out.println("Email: ");
+			customerEmail = scanner.nextLine();
+			
+			System.out.println("Password: ");
+			customerPassword = scanner.nextLine();
+			do {
+				System.out.println("Re-enter password: ");
+				reenterPassword = scanner.nextLine();
+				if(reenterPassword.equals(customerPassword)) {
+					
+				}else {
+					System.out.println("Password mismatch. Retype new password again");
+				}
+			}while(!reenterPassword.equals(customerPassword));
+			
 			System.out.println("Name: ");
 			customerName = scanner.nextLine();
 
@@ -39,9 +56,6 @@ public class CustomerMenu
 
 			System.out.println("Mobile number: ");
 			customerMobileNumber = scanner.nextLine();
-
-			System.out.println("Email: ");
-			customerEmail = scanner.nextLine();
 
 			System.out.println("Address: ");
 			customerAddress = scanner.nextLine();
@@ -99,6 +113,7 @@ public class CustomerMenu
 				List userList = new ArrayList<>();		//ctrl space
 				userList.add(cust);
 				user.put(cust.getCustomerID(),userList);
+				Utility.storeCustData(user);
 			}
 			System.out.println("The customer details are " + user);
 			return cust.getCustomerID();

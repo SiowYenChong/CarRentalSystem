@@ -69,7 +69,7 @@ public class Main {
 				break;
 			case 3:
 				loggedInCustomer = Utility.validUser(email);	
-				System.out.print("REGISTER CUSTOMER");
+				//System.out.print("REGISTER CUSTOMER");
 				if(!"".equals(loggedInCustomer)) {
 					custID = custObj.customerRegistration(email);
 				}
@@ -330,7 +330,7 @@ public class Main {
 			case 53:
 				System.out.println("\n\t\t\t HIRE A CAR");  //Create menu -
 				loggedInCustomer = Utility.validUser(email);		//check if user login
-				System.out.println("Login Customer: " + loggedInCustomer);
+				//System.out.println("Login Customer: " + loggedInCustomer);
 				if(!"".equals(loggedInCustomer)) {
 					System.out.println("-------------------------------------------------------------------------------------------------------");	
 					Customer cust = Utility.getCustomer(loggedInCustomer);

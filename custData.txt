@@ -1,2 +1,1 @@
-C001;Claire;01/01/99;0103636521;Claire@gmail.com;Selangor,Malaysia
-C002;Bala;01/05/97;0151113334;Bala@gmail.com;Melaka,Malaysia
+C001;Andy;01/01/00;01720123456;user1@gmail.com;Kuala Lumpur,Msia;null

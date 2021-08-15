@@ -21,7 +21,7 @@ import com.system.util.Utility;
 public class CarRentalProcess {
 	Map <String,List<CarRegistration>> map = null;
 	public Map <String,List<CarRegistration>> getAvailableCars() throws Exception{
-		if(map == null) {
+		if(map != null) {
 			map = Utility.loadData();
 		}
 		for(Map.Entry <String,List<CarRegistration>> set: map.entrySet()) {
@@ -29,24 +29,37 @@ public class CarRentalProcess {
 			List<CarRegistration> cars = set.getValue();
 			if(!cars.isEmpty()) {
 				CarRegistration car = cars.get(0);
-				System.out.println(car);
+				if(car.getEndDate() != null) {
+					System.out.println( "regID = " + car.getRegID()+ ", regNumber = " +car.getRegNumber()+ ", carBrand = " + car.getCarBrand() + 
+					"\n carModel = " + car.getCarModel() + ", carNumber = " + car.getCarNumber()+ " carDescription = " + car.getCarDescription() + 
+					"\n  price(Per Hour) = "+ car.getFormat(car.getBasePrice())+ ", carRental = "+ car.getFormat(car.getCarRental())+ 
+					"\n startDate = "+ car.formatDate(""+car.getStartDate()) + ", endDate = " + car.formatDate(""+car.getEndDate())+
+					"\n This car is ONLY AVAILABLE BEFORE "+ car.formatDate(""+car.getStartDate()) + " OR AFTER "+ car.formatDate(""+car.getEndDate())+
+					"\n -------------------------------------------------------------------------------------------------------");
+				}else {
+					System.out.println(car);
+				}
 			}
 			
 		}
 		return map;		
 	}
+	public void returnCar() {
+		System.out.println("");
+		//continue
+	}
 	public void showHiredCars() throws Exception{
-		Map <String,List<CarRegistration>> map = Utility.loadData();
-		boolean noCar = false;
-		for(Map.Entry <String,List<CarRegistration>> set: map.entrySet()) {
+			Map <String,List<CarRegistration>> hiredCarMap = Utility.loadData();
+		
+		boolean noCar = true;
+		for(Map.Entry <String,List<CarRegistration>> set: hiredCarMap.entrySet()) {
 			String key = set.getKey();
 			List<CarRegistration> cars = set.getValue();
 			if(!cars.isEmpty()) {
 				CarRegistration car = cars.get(0);
 				if(car.getStartDate() != null && car.getEndDate() != null) {
 					System.out.println(car);
-				}else {
-					noCar = true;
+					noCar = false;
 				}
 			}
 		}
@@ -54,64 +67,90 @@ public class CarRentalProcess {
 			System.out.println("\t\t\t There is no hired car.");
 		
 	}
-	public void hireCar(Map <String,List<CarRegistration>> map) throws Exception{
+	public String inputDate(String input) throws Exception {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Enter the "+ input +" date (DD/MM/YYYY HH:mm (24hr system)) to hire: ");
+		String startDate = scanner.nextLine();
+		String stDate = ""; 
+		if(validateDate(startDate)) {
+			stDate = convertDate(startDate);		//Date is validated
+			if(!compareCurrentDate(stringToDate(stDate))) {
+				System.out.println(" " + input + " date time should not be before current date time.Try again.");
+				stDate = "";
+			}
+		}
+		return stDate;
+	}
+	public boolean validateCar(String regID) {
+		CarRegistration car = map.get(regID).get(0);
+		return compareCurrentDate(car.getEndDate());
+	}
+	public void hireCar(Map <String,List<CarRegistration>> map, String custID) throws Exception{
 		
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Please enter registration ID of car: ");
 		String regID = scanner.nextLine();
 		if(map.get(regID) != null) {
-			CarRegistration car = map.get(regID).get(0);
-			System.out.println("This car's base price is "+ Utility.getFormat(car.getBasePrice()));
-			System.out.println("Are you sure you want to rent this car? (Y/N): ");
-			String agree = scanner.nextLine();
-			if(agree.equalsIgnoreCase("Y")) {
-				System.out.println("Enter the start date (DD/MM/YYYY HH:mm:ss) to hire: ");
-				String startDate = scanner.nextLine();
-				String stDate = "";
-				String enDate = "";
+			String stDate = "";
+			String enDate = "";
+			do {
+				stDate = inputDate("Start");
+			}while(stDate.equals(""));			//Do while unless there's ""
+			do {
+				enDate = inputDate("End");
+			}while(enDate.equals(""));
 				
-				if(validateDate(startDate)) {
-					stDate = convertDate(startDate);
-				}
-				System.out.println("Enter the end date (DD/MM/YYYY HH:mm:ss) to hire: ");
-				String endDate = scanner.nextLine();
-				
-				if(validateDate(endDate)) {
-					enDate = convertDate(endDate);
-				}
+				boolean isError = false;
 				if(validateDates(stDate, enDate) && dateValidation2(stDate, enDate)) {
-					LocalDateTime dt = stringToDate(stDate);
-					car.setStartDate(dt);
-					LocalDateTime enDt = stringToDate(enDate);
-					car.setEndDate(enDt);
+
 				}else {
+					isError = true;
 					System.out.println("Invalid date.");
+					return;
 				}
-	
 				
 				/*end date>start date
 				 * date include hrs
 				*/
-				double rent =  getRent(car.getBasePrice(), stDate, enDate) ;
-				System.out.println("The rent for the car is RM"+Utility.getFormat(rent));
-				System.out.println("Do you want to continue? (Y/N): ");
-				String ans = scanner.nextLine();
-				if(ans.equalsIgnoreCase("Y")) {
-					car.setCarRental(rent);
-					List list = new ArrayList();		//ctrl space
-					list.add(car);
-					//map.put("regList",list);
-					map.put(regID, list);
-					Utility.storeData(map);
-					System.out.println("Directing to payment gateway..");
-					System.out.println("You have booked the car.");
-				}else if(ans.equalsIgnoreCase("N")) {
-					
-				}else {
-					System.out.println("Invalid option.");
-				}
 				
-			}
+					CarRegistration obj = map.get(regID).get(0);
+					boolean isAlreadyHired = (obj.getStartDate() != null && obj.getEndDate()!=null)? true: false;
+					if(!"null".equals(obj.getStartDate()) && !"null".equals(obj.getEndDate())) {
+						LocalDateTime inputStDate = LocalDateTime.parse(stDate);
+						LocalDateTime inputEndDate = LocalDateTime.parse(enDate);
+						if(isAlreadyHired && (inputStDate.isAfter(obj.getStartDate()) || inputStDate.isEqual(obj.getStartDate()) 
+						|| inputEndDate.isAfter(obj.getStartDate())|| inputEndDate.isEqual(obj.getEndDate()))){
+							System.out.println("This car is already hired. Probable end time is "+CarRegistration.formatDate(""+obj.getEndDate())+". Select 53 again.");
+						}else {
+							if(!isError) {
+								System.out.println("This car's base price is "+ Utility.getFormat(obj.getBasePrice()));
+								System.out.println("Are you sure you want to rent this car? (Y/N): ");
+								String agree = scanner.nextLine();
+								
+								if(agree.equalsIgnoreCase("Y")) {
+									double rent =  getRent(obj.getBasePrice(), stDate, enDate);
+									LocalDateTime dt = stringToDate(stDate);
+									obj.setStartDate(dt);
+									LocalDateTime enDt = stringToDate(enDate);
+									obj.setEndDate(enDt);
+									obj.setCarRental(rent);
+									obj.setUserID(custID);
+									List list = new ArrayList();		//ctrl space
+									list.add(obj);
+									//map.put("regList",list);
+									map.put(regID, list);
+									Utility.storeData(map);
+									System.out.println("Directing to payment gateway..");
+									System.out.println("You have booked the car.");
+								}
+							}
+							
+						}
+					}else {
+					System.out.println("Invalid option.");
+					}
+				
+		
 			
 		}else {
 			System.out.println("Kindly enter valid registration ID of car.");
@@ -125,14 +164,28 @@ public class CarRentalProcess {
 		String tempDate = tempStDate[0].split("/")[0];
 		String tempHr = tempStDate[1].split(":")[0];
 		String tempMin = tempStDate[1].split(":")[1];
-		String tempSec = tempStDate[1].split(":")[2];
-		String stDate = tempYr + "-" + tempMth + "-" + tempDate + "T" + tempHr + ":" + tempMin + ":" + tempSec;
+		//String tempSec = tempStDate[1].split(":")[2];
+		String stDate = tempYr + "-" + tempMth + "-" + tempDate + "T" + tempHr + ":" + tempMin;
+		
 		//System.out.println(stDate);
 		return stDate;
 	}
 	public LocalDateTime stringToDate(String input) throws Exception{
-		LocalDateTime localDateTime = LocalDateTime.parse(input);
+		LocalDateTime localDateTime = LocalDateTime.parse(input);	//dd:MM::yyyy without am pm
 		return localDateTime;
+	}
+	public boolean compareCurrentDate(LocalDateTime input) {	//working fine
+		boolean result = true;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+		LocalDateTime currentDate = LocalDateTime.now(); 
+		String current = formatter.format(currentDate);
+		/*System.out.println("Current date is "+current);
+		System.out.println("Input Date: "+input);*/
+		LocalDateTime currentDateTime = LocalDateTime.parse(current, formatter);
+		if(input.isBefore(currentDateTime)) {
+			result = false;
+		}
+		return result;
 	}
 	public boolean dateValidation(Date firstDate, Date lastDate) {
 		boolean result = false;
@@ -148,9 +201,9 @@ public class CarRentalProcess {
 	}
 	public static void main(String[] args) throws Exception{
 		CarRentalProcess obj = new CarRentalProcess();
-		String start = "2021-08-10T12:25:01";
-		String end = "2023-08-11T12:30:02";
-		System.out.println("Difference: "+ obj.validateDates(start, end));
+		String date = "09/08/2021 00:12:00";
+		String date1 = obj.convertDate(date);
+		System.out.println("Difference: "+ obj.compareCurrentDate(obj.stringToDate(date1)));
 		
 	}
 	public double computeRent(double basePrice, String startDate, String endDate) {
@@ -175,27 +228,28 @@ public class CarRentalProcess {
 	public boolean validateDates(String startDate, String endDate) {
 		//check date valid?
 		boolean result = false;
-		 DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"); 
+		 DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"); 
 		 try {
 			 format.parse(startDate);
 			 format.parse(endDate);
 			 result = true;
 		 }catch (Exception e){
-			 System.out.println("Kindly enter date in yyyy-MM-dd HH:mm:ss");
+			 System.out.println("Kindly enter date in yyyy-MM-dd HH:mm");
 		 }
 		return result; 
 	}
 	public boolean validateDate(String startDate) {
 		//check date valid?
 		boolean result = false;
-		 DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/YYYY HH:mm:ss"); 
+		 DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/YYYY HH:mm"); 
 		 LocalDateTime currentDate = LocalDateTime.now();
 		 try {
 			 TemporalAccessor d1 = format.parse(startDate);
 			 //TemporalAccessor d2 = format.parse(currentDate);
 			 result = true;
 		 }catch (Exception e){
-			 System.out.println("Kindly enter date in dd/MM/YYYY HH:mm:ss");
+			 System.out.println("Kindly enter date in dd/MM/YYYY HH:mm (24hr System)");
+			 //e.printStackTrace();
 		 }
 		return result; 
 	}

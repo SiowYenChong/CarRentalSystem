@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.system.pojo.CarRegistration;
+import com.system.pojo.Customer;
 import com.system.util.Utility;
 
 public class Main {
@@ -328,12 +329,19 @@ public class Main {
 				break;
 			case 53:
 				System.out.println("\n\t\t\t HIRE A CAR");  //Create menu -
-				System.out.println("-------------------------------------------------------------------------------------------------------");	
-				Map <String,List<CarRegistration>> map = carRental.getAvailableCars();
-				carRental.hireCar(map);
+				loggedInCustomer = Utility.validUser(email);		//check if user login
+				System.out.println("Login Customer: " + loggedInCustomer);
+				if(!"".equals(loggedInCustomer)) {
+					System.out.println("-------------------------------------------------------------------------------------------------------");	
+					Customer cust = Utility.getCustomer(loggedInCustomer);
+					Map <String,List<CarRegistration>> map = carRental.getAvailableCars();
+					carRental.hireCar(map, cust.getCustomerID());
+				}else {
+					//System.out.println("You are not logged in. Kindly select 1 to login.");
+				}
 				break;
 			case 6:
-				System.out.print("RETURN A CAR");	//show number of registered customers, registered cars
+				System.out.print("\n\t\t\t RETURN A CAR");	//show number of registered customers, registered cars
 				break;
 			case 7:
 				System.out.print("LOGOUT");

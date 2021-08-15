@@ -102,12 +102,32 @@ public class CarRegistration {
 	public void setUserID(String userID) {
 		this.userID = userID;
 	}
-	
+	public static String formatDate(String date) {
+		//2021-08-11T12:00
+		String stDate = "";
+		if(null != date && !"null".equals(date)) {	//null unidentified and null string
+			String[] tempStDate = date.split("T");
+			String tempYr = tempStDate[0].split("-")[0];
+			String tempMth = tempStDate[0].split("-")[1];
+			String tempDate = tempStDate[0].split("-")[2];
+			String tempHr = tempStDate[1].split(":")[0];
+			String tempMin = tempStDate[1].split(":")[1];
+			String tempSec = "00"; //tempStDate[1].split(":")[2];
+			String tempAmPm = tempStDate[0];
+			if(tempAmPm.toUpperCase().startsWith("P") ) {
+				tempHr = Integer.parseInt(tempHr)+12+"";	//cant store int value as string, end with ""
+			}
+			stDate = tempDate + "/" + tempMth + "/" + tempYr + " " + tempHr + ":" + tempMin + ":" + tempSec;
+		}
+		return stDate;
+	}
 	@Override
 	public String toString() {
+		String hiredBy = (null != getUserID())? "Hired by = "+getUserID(): "";
 		return "regID = " +regID+ ", regNumber = " +regNumber+ ", carBrand = " + carBrand + 
 				"\n carModel = " + carModel + ", carNumber = " + carNumber+ " carDescription = " + carDescription + 
-				"\n  price(Per Hour) = "+getFormat(basePrice)+ ", carRental = "+getFormat(carRental)+ 
+				"\n  price(Per Hour) = "+getFormat(basePrice)+
+				"\n " + hiredBy +  
 				"\n -------------------------------------------------------------------------------------------------------";	  
 	}
 	

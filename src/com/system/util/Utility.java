@@ -5,7 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -48,8 +50,9 @@ public class Utility {
 	public static Map<String, List<CarRegistration>> loadData()throws Exception {		//file handling
 		File file = new File ("inputData.txt");
 		Scanner scanner = new Scanner(file);							//reading from file
-		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		//import list
-		
+		Map<String, List<CarRegistration>> map = new LinkedHashMap<>();		//import list
+		String seq = "V00";
+		int counter = 1;
 		while(scanner.hasNextLine()) {
 			CarRegistration carReg = new CarRegistration (); //car object
 			String data = scanner.nextLine();
@@ -60,10 +63,23 @@ public class Utility {
 			carReg.setCarNumber(dataArray[3]);
 			carReg.setRegNumber(dataArray[4]);
 			carReg.setBasePrice(Double.parseDouble(dataArray[6]));	//Double.parseDouble	
-			carReg.setRegID(SequenceGenerator.getCarNext());
-			carReg.setCarDescription(dataArray[5]);	
+			carReg.setRegID(seq + counter++);
+			carReg.setCarDescription(dataArray[5]);
+			if(dataArray.length > 6 && !"null".equals(dataArray[7])) {
+				LocalDateTime datetime = LocalDateTime.parse(dataArray[7]);
+				carReg.setStartDate(datetime);
+			}
+			if(dataArray.length > 7 && !"null".equals(dataArray[8])) {
+				LocalDateTime datetime = LocalDateTime.parse(dataArray[8]);
+				carReg.setEndDate(datetime);
+			}
+			String rental = (dataArray.length > 8 && dataArray[9] != null && !"null".equals(dataArray[9]))? dataArray[9]: "0.0";
+			carReg.setCarRental(Double.parseDouble(rental));
+			List list = new ArrayList();				//ctrl space
+			list.add(carReg);
+			map.put(carReg.getRegID(), list);
 			
-			if(map.get(carReg.getRegID())!=null) { 					//registration details
+			/*if(map.get(carReg.getRegID())!=null) { 					//registration details
 				List list = map.get(carReg.getRegID());
 				list.add(carReg);
 				map.put(carReg.getRegID(), list);
@@ -72,7 +88,7 @@ public class Utility {
 				list.add(carReg);
 				//map.put("regList",list);
 				map.put(carReg.getRegID(), list);
-			}
+			}*/
 		}
 		return map;
 	}
@@ -90,6 +106,7 @@ public class Utility {
 		String endDate;
 		String rental;
 		String data = "";
+		String userID = "";
 		CarRegistration car;
 		for(Map.Entry <String,List<CarRegistration>> set: map.entrySet()) {
 			//System.out.println("Testing");
@@ -104,7 +121,8 @@ public class Utility {
 			startDate = ""+car.getStartDate();	//convert to string with ""
 			endDate = ""+car.getEndDate();
 			rental = ""+car.getCarRental();
-			data = data + regID + "," + name + "," + model + "," + plate + "," + regNum + "," + desc + "," + basePrice;
+			userID = car.getUserID();
+			data = data + regID + "," + name + "," + model + "," + plate + "," + regNum + "," + desc + "," + basePrice+ "," + userID;
 			if(!startDate.equals("") && !endDate.equals("")) {
 				data = data + "," + startDate + "," + endDate + "," + rental;
 			}
@@ -136,6 +154,21 @@ public class Utility {
 			Path path = Paths.get(fileName);		//Get old obj from file 
 			Files.write(path, data.getBytes());		//getBytes() = convert data to byte
 		}
+	}
+	public static Customer getCustomer(String emailID) throws Exception{
+		loadCustData(System.getProperty("user.dir")+"/custData.txt");
+		Map<String, List<Customer>> map = CarRentalModel.user;
+		String custID;
+		Customer cust = null;
+		for(Map.Entry <String,List<Customer>> set: map.entrySet()) {
+			//System.out.println("Testing");
+			custID = set.getKey();
+			cust = set.getValue().get(0);
+			if(emailID.equals(cust.getCustomerEmail())) {
+				break;
+			}
+		}
+		return cust;
 	}
 	public static void loadCustData(String fileName)throws Exception {		//file handling
 		File file = new File (fileName);

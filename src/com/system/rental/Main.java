@@ -45,7 +45,8 @@ public class Main {
 		System.out.println("   52. Already hired cars");
 		System.out.println("   53. Hire a car");
 		System.out.println("6. Return a Car");
-		System.out.println("7. Logout");    
+		System.out.println("7. Display customer details");
+		System.out.println("8. Logout");    
 		String email = "";
 		//Utility.loadData(System.getProperty("user.dir")+"/inputData.txt");
 		//Utility.loadData();
@@ -191,7 +192,7 @@ public class Main {
 				loggedInCustomer = Utility.validUser(email);		//check if user login
 				System.out.print("EDIT EXISTING CAR REGISTRATION NUMBER");
 				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
-					regID = carObj.getRegID();
+					regID = carObj.getRegID("edit");
 					carObj.editCarRegNum(regID);
 				}else {
 					if("".equals(email)) {
@@ -206,7 +207,7 @@ public class Main {
 				loggedInCustomer = Utility.validUser(email);		//check if user login
 				System.out.println("EDIT EXISTING CAR BRAND");
 				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
-					regID = carObj.getRegID();
+					regID = carObj.getRegID("edit");
 					carObj.editCarBrand(regID);
 				}else {
 					if("".equals(email)) {
@@ -221,7 +222,7 @@ public class Main {
 				loggedInCustomer = Utility.validUser(email);		//check if user login
 				System.out.print("EDIT EXISTING CAR MODEL");
 				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
-					regID = carObj.getRegID();
+					regID = carObj.getRegID("edit");
 					carObj.editCarModel(regID);
 				}else {
 					if("".equals(email)) {
@@ -236,7 +237,7 @@ public class Main {
 				loggedInCustomer = Utility.validUser(email);		//check if user login
 				System.out.print("EDIT EXISTING CAR NUMBER");
 				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
-					regID = carObj.getRegID();
+					regID = carObj.getRegID("edit");
 					carObj.editCarNumber(regID);
 				}else {
 					if("".equals(email)) {
@@ -251,7 +252,7 @@ public class Main {
 				loggedInCustomer = Utility.validUser(email);
 				System.out.print("EDIT EXISTING CAR DESCRIPTION");
 				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
-					regID = carObj.getRegID();
+					regID = carObj.getRegID("edit");
 					carObj.editCarDescription(regID);
 				}else {
 					if("".equals(email)) {
@@ -266,7 +267,7 @@ public class Main {
 				loggedInCustomer = Utility.validUser(email);
 				System.out.print("EDIT EXISTING BASE PRICE");
 				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
-					regID = carObj.getRegID();
+					regID = carObj.getRegID("edit");
 					carObj.editCarBasePrice(regID);
 				}else {
 					if("".equals(email)) {
@@ -281,7 +282,7 @@ public class Main {
 				loggedInCustomer = Utility.validUser(email);
 				System.out.print("EDIT ALL EXISTING PROPERTIES");
 				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
-					regID = carObj.getRegID();
+					regID = carObj.getRegID("edit");
 					carObj.editCarRegNum(regID);
 					carObj.editCarBasePrice(regID);
 					carObj.editCarBrand(regID);
@@ -301,7 +302,7 @@ public class Main {
 				loggedInCustomer = Utility.validUser(email);
 				System.out.print("DELETE EXISTING CAR REGISTRATION");
 				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
-					regID = carObj.getRegID();
+					regID = carObj.getRegID("delete");
 					carObj.deleteCar(regID);
 				}else {
 					if("".equals(email)) {
@@ -344,6 +345,9 @@ public class Main {
 				System.out.print("\n\t\t\t RETURN A CAR");	//show number of registered customers, registered cars
 				break;
 			case 7:
+				System.out.println("CUSTOMER DETAILS (ADMIN ONLY)");
+				break;
+			case 8:
 				System.out.print("LOGOUT");
 				break;
 			default:

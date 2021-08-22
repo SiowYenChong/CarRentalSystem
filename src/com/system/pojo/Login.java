@@ -1,6 +1,8 @@
 package com.system.pojo;
 import java.util.*;
 
+import com.system.util.Utility;
+
 public class Login {
 	Scanner input = new Scanner(System.in);
 
@@ -12,21 +14,24 @@ public class Login {
 	HashMap<String, String> details = new HashMap<String, String>();
 	
 	
-    public boolean doLogin()
+    public boolean doLogin()throws Exception
     {
-    	details.put("user1@gmail.com", "abcd123");
-		details.put("admin1@gmail.com", "abcd123");
-    	if(details.containsKey(id))
-    		return true;
-    	else 
-    		return false;
-    	
+    	boolean result = false;
+    	/*details.put("user1@gmail.com", "abcd123");
+		details.put("admin1@gmail.com", "abcd123");*/
+    	Customer cust = Utility.getCustomer(id);
+    	if(!cust.getCustomerID().equals("")) {
+    		if(cust.getCustomerEmail().equals(id.trim())) {		//remove blank space
+    				result = true;
+    		}
+    	}
+    	return result;
     }
-
     
-    public boolean verifyUser()
+    public boolean verifyUser()throws Exception
     {
-    	if((details != null && details.get(id) != null) && details.get(id).equals(password))	//user input not equals null
+    	Customer cust = Utility.getCustomer(id);
+    	if((!cust.getCustomerID().equals("")) && cust.getPassword().equals(password))	//user input not equals null
     	{
     		return correctPassword=true;
     	}

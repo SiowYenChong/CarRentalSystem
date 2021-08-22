@@ -27,7 +27,7 @@ public class CarRentalProcess {
 			List<CarRegistration> cars = set.getValue();
 			if(!cars.isEmpty()) {
 				CarRegistration car = cars.get(0);
-				if(car.getEndDate() != null) {
+				/*if(car.getEndDate() != null) {
 					String hiredBy = (null != car.getUserID())? "Hired by = "+ car.getUserID(): "";
 					System.out.println( "regID = " + car.getRegID()+ ", regNumber = " +car.getRegNumber()+ ", carBrand = " + car.getCarBrand() + 
 					"\n carModel = " + car.getCarModel() + ", carNumber = " + car.getCarNumber()+ " carDescription = " + car.getCarDescription() + 
@@ -38,7 +38,7 @@ public class CarRentalProcess {
 					"\n -------------------------------------------------------------------------------------------------------");
 				}else {
 					System.out.println(car);
-				}
+				}*/ System.out.println(car);
 			}
 			
 		}
@@ -119,9 +119,11 @@ public class CarRentalProcess {
 					if(!"null".equals(obj.getStartDate()) && !"null".equals(obj.getEndDate())) {
 						LocalDateTime inputStDate = LocalDateTime.parse(stDate);
 						LocalDateTime inputEndDate = LocalDateTime.parse(enDate);
-						if(isAlreadyHired && (inputStDate.isAfter(obj.getStartDate()) || inputStDate.isEqual(obj.getStartDate()) 
-						|| inputEndDate.isAfter(obj.getStartDate())|| inputEndDate.isEqual(obj.getEndDate()))){
-							System.out.println("This car is already hired. Probable end time is "+CarRegistration.formatDate(""+obj.getEndDate())+". Select 53 again.");
+						if(isAlreadyHired && ((inputStDate.isEqual(obj.getStartDate())  && inputEndDate.isEqual(obj.getEndDate()) )		
+								|| (inputStDate.isBefore(obj.getStartDate()) && inputEndDate.isBefore(obj.getEndDate()) )
+								//||(inputStDate.isAfter(obj.getStartDate()) && inputEndDate.isAfter(obj.getEndDate()) )	
+								||(inputStDate.isAfter(obj.getStartDate()) && inputEndDate.isBefore(obj.getEndDate()) )	)) {
+								System.out.println("This car is already hired. Probable end time is "+CarRegistration.formatDate(""+obj.getEndDate())+". Select 53 again.");
 						}else {
 							if(!isError) {
 								System.out.println("This car's base price is "+ Utility.getFormat(obj.getBasePrice()));
@@ -141,6 +143,7 @@ public class CarRentalProcess {
 									//map.put("regList",list);
 									map.put(regID, list);
 									Utility.storeData(map);
+									System.out.println("Total rent of this car will be: "+rent);
 									System.out.println("Directing to payment gateway..");
 									System.out.println("You have booked the car.");
 								}

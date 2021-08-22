@@ -7,7 +7,7 @@ import com.system.pojo.Login;
 
 public class LoginTest {
 
-	public static String logIn() {
+	public static String logIn() throws Exception{
 		Scanner input = new Scanner(System.in);
 		boolean result = false;
 		String id, password;

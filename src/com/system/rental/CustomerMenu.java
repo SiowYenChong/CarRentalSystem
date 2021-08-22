@@ -2,7 +2,9 @@
  //Customer menu
 
 package com.system.rental;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -89,6 +91,11 @@ public class CustomerMenu
 				cust.setCustomerEmail(customerEmail);
 			}
 
+			if(customerPassword != null && !"".equals(customerPassword))
+			{
+				cust.setPassword(customerPassword);
+			}
+			
 			if(customerAddress != null && !"".equals(customerAddress))
 			{
 				cust.setCustomerAddress(customerAddress);
@@ -115,7 +122,7 @@ public class CustomerMenu
 				user.put(cust.getCustomerID(),userList);
 				Utility.storeCustData(user);
 			}
-			System.out.println("The customer details are " + user);
+			System.out.println("The customer details are " + user.get(cust.getCustomerID()));
 			return cust.getCustomerID();
 		}
 
@@ -200,7 +207,23 @@ public class CustomerMenu
 		 * 
 		 * }
 		 */
-		
+		public void getCustomerDetails() {
+			String adminUsername;
+			String adminPassword;
+			
+		}
+		public String getPassword(String adminUsername) {
+			String pwd = "";			//pwd=password
+			if(!adminUsername.equalsIgnoreCase("admin")) {
+				throw new NullPointerException("Invalid admin ID");
+			}else {
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				Date dt = new Date();
+				String date = sdf.format(dt);
+				pwd = "admin" + date;
+			}
+			return pwd;
+		}
 		public boolean checkCustomerList() {
 			Map<String, List<Customer>> map = CarRentalModel.user;
 			return map.isEmpty();
@@ -333,16 +356,20 @@ public class CustomerMenu
 		public void deleteCustomer(String customerID) throws Exception
 		{
 			Scanner scanner1 = new Scanner(System.in);
+			
+			Utility.loadCustData(System.getProperty("user.dir")+"/custData.txt");
 			Map<String, List<Customer>> map = CarRentalModel.user;		
+			System.out.println(map);
 			String inputValue;
 			System.out.println("Are you sure to delete " + customerID + " : (Y/N)");
 			inputValue = scanner1.nextLine();
 			if(inputValue.equalsIgnoreCase("Y")) 
 			{
-			
+					System.out.println(">"+customerID+"<");
 					List<Customer> obj = map.remove(customerID);
-					if(null!=obj)
+					if(null!=obj) {
 						System.out.println("Customer's information has been deleted successfully.");
+					}
 					else
 						System.out.println("The customer ID is invalid.");
 	

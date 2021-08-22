@@ -99,7 +99,11 @@ public class Customer
 	//@Override
 	public String toString() 
 	{
+		StringBuilder sb = new StringBuilder();		//not threadSafe
+		for(int i = 0; i<getPassword().length(); i++) {
+			sb.append("*");
+		}
 		return "Customer [customerID = " + customerID + ", customerName = " + customerName + ", customerBirthDate = " + customerBirthDate
-				+ ", customerMobileNumber = " + customerMobileNumber + ", customerEmail = " + customerEmail + ", customerAddress = " + customerAddress + "]";	  
+				+ ", customerMobileNumber = " + customerMobileNumber + ", customerEmail = " + customerEmail + ", customerAddress = " + customerAddress +  ", password = "+ sb.toString() + "]";	  
 	}
 }

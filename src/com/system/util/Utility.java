@@ -1,5 +1,6 @@
 package com.system.util;
 import java.io.File;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -50,7 +51,7 @@ public class Utility {
 	public static Map<String, List<CarRegistration>> loadData()throws Exception {		//file handling
 		File file = new File ("inputData.txt");
 		Scanner scanner = new Scanner(file);							//reading from file
-		Map<String, List<CarRegistration>> map = new LinkedHashMap<>();		//import list
+		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		//import list
 		String seq = "V00";
 		int counter = 1;
 		while(scanner.hasNextLine()) {
@@ -111,6 +112,19 @@ public class Utility {
 		String data = "";
 		String userID = "";
 		CarRegistration car;
+		
+		int numUpdatedCars = map.size();
+		boolean deleteFile = false;
+		if(numUpdatedCars == 0) {
+			deleteFile = true;
+			System.out.println("Empty file");
+		}
+		if(deleteFile) {
+			PrintWriter pw = new PrintWriter(fileName);		//Class to write content to file
+			pw.print("");
+			pw.close();
+		}
+		
 		for(Map.Entry <String,List<CarRegistration>> set: map.entrySet()) {
 			//System.out.println("Testing");
 			regID = set.getKey();
@@ -145,6 +159,18 @@ public class Utility {
 		String data = "";
 		String password = "";
 		Customer cust;
+		
+		int numUpdatedCustomer = map.size();
+		boolean deleteFile = false;
+		if(numUpdatedCustomer == 0) {
+			deleteFile = true;
+			System.out.println("Empty file");
+		}
+		if(deleteFile) {
+			PrintWriter pw = new PrintWriter(fileName);		//Class to write content to file
+			pw.print("");
+			pw.close();
+		}
 		for(Map.Entry <String,List<Customer>> set: map.entrySet()) {
 			//System.out.println("Testing");
 			custID = set.getKey();
@@ -184,7 +210,8 @@ public class Utility {
 		return cust;
 		
 	}
-	public static void loadCustData(String fileName)throws Exception {		//file handling
+	//method return map of key: String, return Customer list
+	public static Map<String, List<Customer>> loadCustData(String fileName)throws Exception {		//file handling
 		File file = new File (fileName);
 		Scanner scanner = new Scanner(file);							//reading from file
 		Map<String, List<Customer>> map = CarRentalModel.user;		//import list
@@ -200,11 +227,12 @@ public class Utility {
 			cust.setCustomerEmail(dataArray[4]);
 			cust.setCustomerAddress(dataArray[5]);
 			SequenceGenerator.getCustomerNext();
+			cust.setPassword(dataArray[6]);
 			
 			if(map.get(dataArray[0])!=null) { 					//registration details
 				List list = map.get(dataArray[0]);
 				list.add(cust);
-				map.put("regList",list);
+				map.put(dataArray[0],list);
 			}else {
 				List list = new ArrayList();				//ctrl space
 				list.add(cust);
@@ -212,5 +240,6 @@ public class Utility {
 				map.put(cust.getCustomerID(), list);
 			}
 		}
+		return map;
 	}
 }

@@ -302,7 +302,10 @@ public class CarRegistrationMenu {
 	}
 	public void deleteCar(String regID) throws Exception{
 		Scanner scanner1 = new Scanner(System.in);
-		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		
+		Utility.loadData();
+		
+		Map<String, List<CarRegistration>> map = CarRentalModel.reg;
+		System.out.println(map);
 		String inputValue;
 		System.out.println("Are you sure to delete "+regID+" : (Y/N)");
 		inputValue = scanner1.nextLine();
@@ -319,7 +322,7 @@ public class CarRegistrationMenu {
 			System.out.println("INVALID OPTION! Please try again.");
 		}
 		Utility.storeData(map);
-		System.out.println("After deletion, map is "+map);
+		//System.out.println("After deletion, map is "+map);
 
 	}
 	/*private void editCarBrand(String regID, CarRegistration obj) {
@@ -332,9 +335,9 @@ public class CarRegistrationMenu {
 		obj = map.get(regID).get(0);
 		obj.setCarBrand(inputValue);
 	}*/
-	public String getRegID() {
+	public String getRegID(String msg) {
 		Scanner scanner = new Scanner(System.in);
-		System.out.println("Confirm car registration ID to edit: ");
+		System.out.println(" Confirm car registration ID to " + msg + " :");
 		String inputValue = scanner.nextLine();
 		return inputValue;
 	}

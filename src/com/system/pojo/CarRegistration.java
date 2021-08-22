@@ -124,11 +124,16 @@ public class CarRegistration {
 	@Override
 	public String toString() {
 		String hiredBy = (null != getUserID())? "Hired by = "+getUserID(): "";
+		String date = "";
+		if(getStartDate() != null) {
+			date = "startDate = "+ formatDate(""+ getStartDate()) + ", endDate = " + formatDate(""+getEndDate());
+		}
 		return "regID = " +regID+ ", regNumber = " +regNumber+ ", carBrand = " + carBrand + 
 				"\n carModel = " + carModel + ", carNumber = " + carNumber+ " carDescription = " + carDescription + 
 				"\n  price(Per Hour) = "+getFormat(basePrice)+
+				"\n " + date +
 				"\n " + hiredBy +  
-				"\n -------------------------------------------------------------------------------------------------------";	  
+				"\n ------------------------------------------------------------------------------------";	  
 	}
 	
 

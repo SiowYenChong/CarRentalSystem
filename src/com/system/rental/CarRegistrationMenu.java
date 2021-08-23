@@ -23,7 +23,7 @@ public class CarRegistrationMenu {
 		carObj.carRegMenu();
 
 	}
-	public void doRegistration() {
+	public void doRegistration() throws Exception{
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("\nWELCOME TO CAR REGISTRATION MENU");
 		System.out.println("Enter Car Brand name: ");
@@ -64,7 +64,17 @@ public class CarRegistrationMenu {
 			carReg.setBasePrice(basePrice);	
 		}
 		if(carReg != null) {
-			carReg.setRegID(SequenceGenerator.getCarNext());		//bring in sequence method
+			Map <String,List<CarRegistration>> fileMap = Utility.loadData();
+			int size = fileMap.size();
+			String reg = "V00";
+			if(size <= 8) {
+				reg = reg + (size + 1);
+			}else if(size > 8 && size < 98) {
+				reg = "V0" + (size + 1);
+			}else {
+				reg = "V" + (size + 1);
+			}
+			carReg.setRegID(reg);		//bring in sequence method
 		}
 		if(desc != null && !"".equals(desc)) {		//not empty and not null
 			carReg.setCarDescription(desc);	
@@ -82,6 +92,7 @@ public class CarRegistrationMenu {
 			//map.put("regList",list);
 			map.put(carReg.getRegID(), list);
 		}
+		Utility.storeData(map);		//What is exception
 		System.out.println("The details are "+map);
 	}
 	public boolean checkAlphabet(String input) {

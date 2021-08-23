@@ -17,7 +17,7 @@ public class Customer
 	String customerEmail;
 	String customerAddress;
 	double carRental;
-	String password;
+	String password = "";
 	
 	public String getPassword() {
 		return password;

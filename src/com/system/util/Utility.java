@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -79,6 +80,8 @@ public class Utility {
 			}
 			String rental = (dataArray.length > 9 && dataArray[10] != null && !"null".equals(dataArray[10]))? dataArray[10]: "0.0";
 			carReg.setCarRental(Double.parseDouble(rental));
+			String deposit = (dataArray.length > 10 && dataArray[11] != null && !"null".equals(dataArray[11]))? dataArray[11]: "0.0";
+			carReg.setCarDeposit(Double.parseDouble(deposit));
 			List list = new ArrayList();				//ctrl space
 			list.add(carReg);
 			map.put(carReg.getRegID(), list);
@@ -109,6 +112,7 @@ public class Utility {
 		String startDate;
 		String endDate;
 		String rental;
+		double deposit;
 		String data = "";
 		String userID = "";
 		CarRegistration car;
@@ -124,7 +128,10 @@ public class Utility {
 			pw.print("");
 			pw.close();
 		}
-		
+		/*Map <String,List<CarRegistration>> fileMap = loadData();
+			if(map.size()>0) {
+				map.putAll(fileMap);
+			}*/
 		for(Map.Entry <String,List<CarRegistration>> set: map.entrySet()) {
 			//System.out.println("Testing");
 			regID = set.getKey();
@@ -139,13 +146,14 @@ public class Utility {
 			endDate = ""+car.getEndDate();
 			rental = ""+car.getCarRental();
 			userID = car.getUserID();
+			deposit = car.getCarDeposit();
 			data = data + regID + "," + name + "," + model + "," + plate + "," + regNum + "," + desc + "," + basePrice+ "," + userID;
 			if(!startDate.equals("") && !endDate.equals("")) {
-				data = data + "," + startDate + "," + endDate + "," + rental;
+				data = data + "," + startDate + "," + endDate + "," + rental  + "," + deposit;
 			}
 			data = data + "\n";
 			Path path = Paths.get(fileName);		//Get old obj from file 
-			Files.write(path, data.getBytes());		//getBytes() = convert data to byte
+			Files.write(path, data.getBytes(), StandardOpenOption.APPEND);		//getBytes() = convert data to byte
 		}
 	}
 	public static void storeCustData(Map <String,List <Customer>> map)throws Exception {

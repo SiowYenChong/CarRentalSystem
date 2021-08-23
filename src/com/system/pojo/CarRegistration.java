@@ -24,6 +24,14 @@ public class CarRegistration {
 	String regNumber;
 	double basePrice;
 	double carRental;		//status
+	double carDeposit;
+	
+	public double getCarDeposit() {
+		return carDeposit;
+	}
+	public void setCarDeposit(double carDeposit) {
+		this.carDeposit = carDeposit;
+	}
 	String regID;
 	LocalDateTime startDate;
 	LocalDateTime endDate;
@@ -126,7 +134,8 @@ public class CarRegistration {
 		String hiredBy = (null != getUserID())? "Hired by = "+getUserID(): "";
 		String date = "";
 		if(getStartDate() != null) {
-			date = "startDate = "+ formatDate(""+ getStartDate()) + ", endDate = " + formatDate(""+getEndDate());
+			date = "startDate = "+ formatDate(""+ getStartDate()) + ", endDate = " + formatDate(""+getEndDate()) + 
+					"\n deposit = "+ getCarDeposit();
 		}
 		return "regID = " +regID+ ", regNumber = " +regNumber+ ", carBrand = " + carBrand + 
 				"\n carModel = " + carModel + ", carNumber = " + carNumber+ " carDescription = " + carDescription + 

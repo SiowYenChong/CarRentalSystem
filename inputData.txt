@@ -1,2 +1,8 @@
-V001,Honda,City,AS123,1002,Nice car,10.0,C002,2021-08-16T12:00,2021-08-16T15:00,30.0
-V003,Proton,Saga,1002,1003,Used 1 yr,8.0,C002,2021-08-16T19:00,2021-08-16T21:00,16.0
+V001,Toyota,Camry,NA123,1002,Used 3 yrs,15.0,null,null,null,0.0,0.0
+V001,Nissan,Almera,TR5851,1004,Used 3 yrs,12.0,null,null,null,0.0,0.0
+V001,Toyota,Camry,NA123,1002,Used 3 yrs,15.0,null,null,null,0.0,0.0
+V001,Toyota,Camry,NA123,1002,Used 3 yrs,15.0,null,null,null,0.0,0.0
+V002,Nissan,Almera,TR5851,1004,Used 3 yrs,12.0,null,null,null,0.0,0.0
+V001,Toyota,Camry,NA123,1002,Used 3 yrs,15.0,null,null,null,0.0,0.0
+V002,Nissan,Almera,TR5851,1004,Used 3 yrs,12.0,null,null,null,0.0,0.0
+V003,Honda,City,AS123,1003,Nice car,10.0,null,null,null,0.0,0.0

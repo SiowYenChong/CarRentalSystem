@@ -125,25 +125,30 @@ public class CarRentalProcess {
 								||(inputStDate.isAfter(obj.getStartDate()) && inputEndDate.isBefore(obj.getEndDate()) )	)) {
 								System.out.println("This car is already hired. Probable end time is "+CarRegistration.formatDate(""+obj.getEndDate())+". Select 53 again.");
 						}else {
+							double deposit =  getDeposit(obj.getBasePrice(), stDate, enDate);
 							if(!isError) {
 								System.out.println("This car's base price is "+ Utility.getFormat(obj.getBasePrice()));
+								System.out.println("Initial deposit for this car will be RM" + deposit);
 								System.out.println("Are you sure you want to rent this car? (Y/N): ");
 								String agree = scanner.nextLine();
 								
 								if(agree.equalsIgnoreCase("Y")) {
 									double rent =  getRent(obj.getBasePrice(), stDate, enDate);
+									
 									LocalDateTime dt = stringToDate(stDate);
 									obj.setStartDate(dt);
 									LocalDateTime enDt = stringToDate(enDate);
 									obj.setEndDate(enDt);
 									obj.setCarRental(rent);
 									obj.setUserID(custID);
+									obj.setCarDeposit(deposit);
 									List list = new ArrayList();		//ctrl space
 									list.add(obj);
 									//map.put("regList",list);
 									map.put(regID, list);
 									Utility.storeData(map);
-									System.out.println("Total rent of this car will be: "+rent);
+									System.out.println("Total rent of this car will be: RM"+rent);
+									System.out.println("Initial deposit for this car will be RM" + deposit);
 									System.out.println("Directing to payment gateway..");
 									System.out.println("You have booked the car.");
 								}
@@ -216,9 +221,24 @@ public class CarRentalProcess {
 		
 		return 100;
 	}
-	public double getRent(double basePrice, String startDate, String endDate) {
+	public double getDeposit(double basePrice, String startDate, String endDate) {
 		 //DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"); 
 		 //format.toFormat(startDate);
+		LocalDateTime startDatets = LocalDateTime.parse(startDate);
+		LocalDateTime endDatets = LocalDateTime.parse(endDate);
+		//ts = timestamp
+		//LocalDate endDatets = endDate.toLocalDateTime().toLocalDate();
+		long hours = Duration.between(startDatets, endDatets).toHours();
+		long days = Duration.between(startDatets, endDatets).toDays();
+		double deposit = 100.0;
+		if(days>1) {
+			deposit += days * basePrice;	
+		}
+		
+		
+		return deposit;
+	}
+	public double getRent(double basePrice, String startDate, String endDate) {
 		LocalDateTime startDatets = LocalDateTime.parse(startDate);
 		LocalDateTime endDatets = LocalDateTime.parse(endDate);
 		//ts = timestamp

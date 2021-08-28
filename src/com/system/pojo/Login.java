@@ -10,10 +10,11 @@ public class Login {
 	boolean correctPassword = false;
 	boolean haveId = false;
 	String user, admin;
+	
 	// Create an empty hash map
 	HashMap<String, String> details = new HashMap<String, String>();
 	
-	// this is to do our login function where we let user to login
+	//login function for user to login
     public boolean doLogin()throws Exception
     {
     	boolean result = false;
@@ -28,7 +29,7 @@ public class Login {
     	return result;
     }
     
-    // To check user is it our user
+    //To check if user is our user
     public boolean verifyUser()throws Exception
     {
     	Customer cust = Utility.getCustomer(id);

@@ -2,6 +2,7 @@ package com.system.util;
 import java.io.File;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,6 +18,8 @@ import java.util.Scanner;
 import com.system.model.CarRentalModel;
 import com.system.pojo.CarRegistration;
 import com.system.pojo.Customer;
+
+import jdk.dynalink.StandardOperation;
 
 public class Utility {
 	public static String getFormat(double input) {
@@ -52,7 +55,7 @@ public class Utility {
 	public static Map<String, List<CarRegistration>> loadData()throws Exception {		//file handling
 		File file = new File ("inputData.txt");
 		Scanner scanner = new Scanner(file);							//reading from file
-		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		//import list
+		Map<String, List<CarRegistration>> map = new LinkedHashMap <String, List<CarRegistration>>();		//import list
 		String seq = "V00";
 		int counter = 1;
 		while(scanner.hasNextLine()) {
@@ -66,7 +69,7 @@ public class Utility {
 			carReg.setRegNumber(dataArray[4]);
 			carReg.setCarDescription(dataArray[5]);
 			carReg.setBasePrice(Double.parseDouble(dataArray[6]));	//Double.parseDouble	
-			carReg.setRegID(seq + counter++);
+			//carReg.setRegID(seq + counter++);
 			if(dataArray.length > 7) {
 				carReg.setUserID(dataArray[7]);
 			}
@@ -100,7 +103,7 @@ public class Utility {
 		return map;
 	}
 	//Toyota,Vios,AW123,1001,Used 2 years,100000
-	public static void storeData(Map <String,List <CarRegistration>> map)throws Exception {
+	public static void storeData(Map <String,List <CarRegistration>> map, String operation)throws Exception {
 		String fileName = System.getProperty("user.dir")+"/inputData.txt";
 		String regID;
 		String name;
@@ -153,7 +156,14 @@ public class Utility {
 			}
 			data = data + "\n";
 			Path path = Paths.get(fileName);		//Get old obj from file 
-			Files.write(path, data.getBytes(), StandardOpenOption.APPEND);		//getBytes() = convert data to byte
+			if(operation.equals("add")) {
+			/*	Files.write(path, (data + System.lineSeparator()).getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE,
+                        StandardOpenOption.APPEND);		//getBytes() = convert data to byte
+            */		Files.write(path, data.getBytes());
+			}else {
+				Files.write(path, data.getBytes());
+			}
+			
 		}
 	}
 	public static void storeCustData(Map <String,List <Customer>> map)throws Exception {

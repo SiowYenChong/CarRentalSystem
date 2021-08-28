@@ -23,9 +23,31 @@ public class CarRegistration {
 	String carDescription;
 	String regNumber;
 	double basePrice;
-	double carRental;		//status
+	double carRental;	
 	double carDeposit;
+	double penalty;
+	double actualRent;
+	boolean details;
 	
+	public boolean isDetails() {	//equivalent getDetails
+		return details;
+	}
+	public void setDetails(boolean details) {
+		this.details = details;
+	}
+	public double getActualRent() {
+		double actualRent = this.getPenalty() + this.getCarRental() - this.getCarDeposit();
+		return actualRent;
+	}
+	public void setActualRent(double actualRent) {
+		this.actualRent = actualRent;
+	}
+	public double getPenalty() {
+		return penalty;
+	}
+	public void setPenalty(double penalty) {
+		this.penalty = penalty;
+	}
 	public double getCarDeposit() {
 		return carDeposit;
 	}
@@ -131,18 +153,36 @@ public class CarRegistration {
 	}
 	@Override
 	public String toString() {
-		String hiredBy = (null != getUserID())? "Hired by = "+getUserID(): "";
+		
+		
+		String hiredBy = (null != getUserID() && !"null".equals(getUserID()))? "Hired by = "+getUserID(): "";
 		String date = "";
-		if(getStartDate() != null) {
+		String returnString = "";
+		if(this.getActualRent() > 0) 
+			returnString = "\n Amount to be paid = "+ (this.getActualRent());
+		if(this.getCarDeposit() > (this.getActualRent() + this.getPenalty()))
+			returnString = "\n Amount to be refunded = "+ (-this.getPenalty());
+		if(getStartDate() != null && !"null".equals(getStartDate())) {
 			date = "startDate = "+ formatDate(""+ getStartDate()) + ", endDate = " + formatDate(""+getEndDate()) + 
-					"\n deposit = "+ getCarDeposit();
+					"\n deposit = "+ getCarDeposit() + 
+					"\n rent = " + this.getCarRental() +
+					returnString ;
 		}
-		return "regID = " +regID+ ", regNumber = " +regNumber+ ", carBrand = " + carBrand + 
+		String result = "regID = " +regID+ ", regNumber = " +regNumber+ ", carBrand = " + carBrand + 
 				"\n carModel = " + carModel + ", carNumber = " + carNumber+ " carDescription = " + carDescription + 
-				"\n  price(Per Hour) = "+getFormat(basePrice)+
-				"\n " + date +
-				"\n " + hiredBy +  
-				"\n ------------------------------------------------------------------------------------";	  
+				"\n price(Per Hour) = "+getFormat(basePrice);
+				if(isDetails()) {
+					result = result + "\n " + date +
+					"\n " + hiredBy;  
+				}else {
+					if(getStartDate() != null && !"null".equals(getStartDate())) {
+						result = result + 
+						"\n available startDate = before "+ formatDate(""+ getStartDate()) + 
+						"\n available endDate = after " + formatDate(""+getEndDate()); 
+					}
+				}
+					result = result + "\n ------------------------------------------------------------------------------------";	  
+				return result;
 	}
 	
 

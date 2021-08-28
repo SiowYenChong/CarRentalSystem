@@ -232,7 +232,7 @@ public class CustomerMenu
 		public void editCustomerName(String customerID, boolean flag) throws Exception
 		{
 			Scanner scanner1 = new Scanner(System.in);
-			Map<String, List<Customer>> map = CarRentalModel.user;		
+			Map<String, List<Customer>> map = Utility.loadCustData(System.getProperty("user.dir")+"/custData.txt");		
 			String inputValue;
 			System.out.println("Enter new name: ");
 			inputValue = scanner1.nextLine();
@@ -253,7 +253,7 @@ public class CustomerMenu
 		public void editCustomerBirthDate(String customerID, boolean flag) throws Exception
 		{
 			Scanner scanner1 = new Scanner(System.in);
-			Map<String, List<Customer>> map = CarRentalModel.user;		
+			Map<String, List<Customer>> map =  Utility.loadCustData(System.getProperty("user.dir")+"/custData.txt");				
 			String inputValue;
 			System.out.println("Enter new date of birth: ");
 			inputValue = scanner1.nextLine();
@@ -274,7 +274,7 @@ public class CustomerMenu
 		public void editCustomerMobileNumber(String customerID, boolean flag) throws Exception
 		{
 			Scanner scanner1 = new Scanner(System.in);
-			Map<String, List<Customer>> map = CarRentalModel.user;		
+			Map<String, List<Customer>> map =  Utility.loadCustData(System.getProperty("user.dir")+"/custData.txt");				
 			String inputValue;
 			System.out.println("Enter new mobile number: ");
 			inputValue = scanner1.nextLine();
@@ -295,7 +295,7 @@ public class CustomerMenu
 		public void editCustomerEmail(String customerID, boolean flag) throws Exception
 		{
 			Scanner scanner1 = new Scanner(System.in);
-			Map<String, List<Customer>> map = CarRentalModel.user;		
+			Map<String, List<Customer>> map =  Utility.loadCustData(System.getProperty("user.dir")+"/custData.txt");				
 			String inputValue;
 			System.out.println("Enter new email: ");
 			inputValue = scanner1.nextLine();
@@ -316,7 +316,7 @@ public class CustomerMenu
 		public void editCustomerAddress(String customerID, boolean flag) throws Exception
 		{
 			Scanner scanner1 = new Scanner(System.in);
-			Map<String, List<Customer>> map = CarRentalModel.user;		
+			Map<String, List<Customer>> map =  Utility.loadCustData(System.getProperty("user.dir")+"/custData.txt");				
 			String inputValue;
 			System.out.println("Enter new address: ");
 			inputValue = scanner1.nextLine();
@@ -338,7 +338,7 @@ public class CustomerMenu
 		
 		public void editAll(String customerID) throws Exception
 		{
-			Map<String, List<Customer>> map = CarRentalModel.user;	
+			Map<String, List<Customer>> map =  Utility.loadCustData(System.getProperty("user.dir")+"/custData.txt");			
 			Customer obj = (null!=map.get(customerID))? map.get(customerID).get(0): null;
 			if(null != obj) {	
 				editCustomerName(customerID, false);
@@ -401,7 +401,7 @@ public class CustomerMenu
 		public String getCustID(String msg) throws Exception
 		{
 			Scanner scanner = new Scanner(System.in);
-			System.out.println("Confirm customer registration ID to "+msg+" : ");
+			System.out.println("\nConfirm customer registration ID to "+msg+" : ");
 			String inputValue = scanner.nextLine();
 			return inputValue;
 		}
@@ -410,7 +410,7 @@ public class CustomerMenu
 		public void editCustomerName(Scanner scanner, Customer obj) 
 		{
 			String inputValue;
-			System.out.println("Confirm customer name to edit: ");
+			System.out.println("\nConfirm customer name to edit: ");
 			inputValue = scanner.nextLine();
 			//obj.setCustomerName(inputValue);
 		}
@@ -418,7 +418,7 @@ public class CustomerMenu
 		private void editCustomerBirthDate(Scanner scanner, Customer obj) 
 		{
 			String inputValue;
-			System.out.println("Confirm customer birth date to edit: ");
+			System.out.println("\nConfirm customer birth date to edit: ");
 			inputValue = scanner.nextLine();
 			obj.setCustomerBirthDate(inputValue);
 		}
@@ -426,7 +426,7 @@ public class CustomerMenu
 		private void editCustomerMobileNumber(Scanner scanner, Customer obj) 
 		{
 			String inputValue;
-			System.out.println("Confirm customer mobile number to edit: ");
+			System.out.println("\nConfirm customer mobile number to edit: ");
 			inputValue = scanner.nextLine();
 			obj.setCustomerMobileNumber(inputValue);
 		}
@@ -434,7 +434,7 @@ public class CustomerMenu
 		private void editCustomerEmail(Scanner scanner, Customer obj) 
 		{
 			String inputValue;
-			System.out.println("Confirm customer email to edit: ");
+			System.out.println("\nConfirm customer email to edit: ");
 			inputValue = scanner.nextLine();
 			obj.setCustomerEmail(inputValue);
 		}
@@ -442,7 +442,7 @@ public class CustomerMenu
 		private void editCustomerAddress(Scanner scanner, Customer obj) 
 		{
 			String inputValue;
-			System.out.println("Confirm customer address to edit: ");
+			System.out.println("\nConfirm customer address to edit: ");
 			inputValue = scanner.nextLine();
 			obj.setCustomerAddress(inputValue);
 		}

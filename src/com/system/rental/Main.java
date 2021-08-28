@@ -40,7 +40,7 @@ public class Main {
 		System.out.println("   46. Edit Base Price");
 		System.out.println("   47. Edit All");
 		System.out.println("   48. Delete existing car registration");
-		System.out.println("5. Rent a Car"); 
+		System.out.println("5. Rent a Car");  //remove, not a function!
 		System.out.println("   51. Show available cars");	//enter carRegID, startDate & endDate
 		System.out.println("   52. Already hired cars");
 		System.out.println("   53. Hire a car");
@@ -300,7 +300,7 @@ public class Main {
 				break;
 			case 48:
 				loggedInCustomer = Utility.validUser(email);
-				System.out.print("DELETE EXISTING CAR REGISTRATION");
+				//System.out.print("DELETE EXISTING CAR REGISTRATION");
 				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
 					regID = carObj.getRegID("delete");
 					carObj.deleteCar(regID);
@@ -320,13 +320,17 @@ public class Main {
 			case 51:
 				System.out.println("\n\t\t\t SHOW AVAILABLE CARS ");  //Create menu -
 				System.out.println("-------------------------------------------------------------------------------------------------------");	
-				carRental.getAvailableCars();
+				loggedInCustomer = Utility.validUser(email);		//check if user login
+				Customer cust = Utility.getCustomer(loggedInCustomer); //pass customer id
+				carRental.getAvailableCars(cust.getCustomerID());
 				System.out.println(" \n");
 				break;
 			case 52:
 				System.out.println("\n\t\t\t SHOW HIRED CARS");  //Create menu -
 				System.out.println("-------------------------------------------------------------------------------------------------------");	
-				carRental.showHiredCars();
+				loggedInCustomer = Utility.validUser(email);		//check if user login
+				Customer cust1 = Utility.getCustomer(loggedInCustomer); //pass customer id
+				carRental.hiredCarsByCustomer(cust1.getCustomerID());
 				break;
 			case 53:
 				System.out.println("\n\t\t\t HIRE A CAR");  //Create menu -
@@ -334,15 +338,25 @@ public class Main {
 				//System.out.println("Login Customer: " + loggedInCustomer);
 				if(!"".equals(loggedInCustomer)) {
 					System.out.println("-------------------------------------------------------------------------------------------------------");	
-					Customer cust = Utility.getCustomer(loggedInCustomer);
-					Map <String,List<CarRegistration>> map = carRental.getAvailableCars();
-					carRental.hireCar(map, cust.getCustomerID());
+					Customer customer = Utility.getCustomer(loggedInCustomer);
+					Map <String,List<CarRegistration>> map = carRental.getAvailableCars(customer.getCustomerID());
+					carRental.hireCar(map, customer.getCustomerID());
 				}else {
 					//System.out.println("You are not logged in. Kindly select 1 to login.");
 				}
 				break;
 			case 6:
-				System.out.print("\n\t\t\t RETURN A CAR");	//show number of registered customers, registered cars
+				System.out.println("\n\t\t\t RETURN A CAR");	//show number of registered customers, registered cars
+				loggedInCustomer = Utility.validUser(email);
+				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
+					Customer customer = Utility.getCustomer(loggedInCustomer);
+					carRental.showHiredCars(customer.getCustomerID());
+				}else {
+					if("".equals(email)) {
+						//System.out.println("User is not logged in");  
+					}
+				}
+				
 				break;
 			case 7:
 				System.out.println("CUSTOMER DETAILS (ADMIN ONLY)");

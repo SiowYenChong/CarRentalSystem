@@ -1,1 +1,2 @@
-C001;Aiden Chia;03/02/97;0129345678;aiden@gmail.com;Terengganu, Malaysia;aiden11
+C001;Aiden;07/07/99;0129345678;aiden@gmail.com;Terengganu, Malaysia;aiden11
+C002;Priya;08/10/96;0135345888;priya@gmail.com;Melaka, Malaysia;priya11

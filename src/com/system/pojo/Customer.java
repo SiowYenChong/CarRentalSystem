@@ -10,14 +10,14 @@ public class Customer
 	-customerEmail:String
 	-customerAddress:String
 */
-	String customerID;
-	String customerName;
-	String customerBirthDate;
-	String customerMobileNumber;
-	String customerEmail;
-	String customerAddress;
-	double carRental;
-	String password = "";
+	private String customerID;
+	private String customerName;
+	private String customerBirthDate;
+	private String customerMobileNumber;
+	private String customerEmail;
+	private String customerAddress;
+	private double carRental;
+	private String password = "";
 	
 	public String getPassword() {
 		return password;

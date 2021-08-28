@@ -1,7 +1,9 @@
 package com.system.rental;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 import com.system.model.CarRentalModel;
@@ -17,12 +19,7 @@ public class CarRegistrationMenu {
 	private double basePrice ;
 	private String desc ;
 	
-	public static void main(String[] args) throws Exception {
-		//Utility.loadData(System.getProperty("user.dir")+"/inputData.txt");
-		CarRegistrationMenu carObj = new CarRegistrationMenu();
-		carObj.carRegMenu();
-
-	}
+	
 	public void doRegistration() throws Exception{
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("\nWELCOME TO CAR REGISTRATION MENU");
@@ -63,16 +60,25 @@ public class CarRegistrationMenu {
 		if(basePrice != 0) {		//not empty and not null
 			carReg.setBasePrice(basePrice);	
 		}
+		Map <String,List<CarRegistration>> fileMap = null;
 		if(carReg != null) {
-			Map <String,List<CarRegistration>> fileMap = Utility.loadData();
+			fileMap = Utility.loadData();
 			int size = fileMap.size();
+			Entry <String,List<CarRegistration>> resultMap = getLastEntry(fileMap);		//Entry: Map property gove both key and value
+			int prevRegID = 0; 
+			String key = "";		//reg id
+			if(resultMap != null) {
+				key = resultMap.getKey();		//dunno key but return last key, no entry return null
+				key = key.replace("V", "");	
+				prevRegID = Integer.parseInt(key);	//store previous reg id without 'V'
+			}
 			String reg = "V00";
-			if(size <= 8) {
-				reg = reg + (size + 1);
-			}else if(size > 8 && size < 98) {
-				reg = "V0" + (size + 1);
+			if(prevRegID <= 8) {
+				reg = reg + (prevRegID + 1);
+			}else if(prevRegID > 8 && prevRegID < 98) {
+				reg = "V0" + (prevRegID + 1);
 			}else {
-				reg = "V" + (size + 1);
+				reg = "V" + (prevRegID + 1);
 			}
 			carReg.setRegID(reg);		//bring in sequence method
 		}
@@ -80,20 +86,27 @@ public class CarRegistrationMenu {
 			carReg.setCarDescription(desc);	
 		}
 		
-		
-		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		//import list
+													//Hashmap that retains insertion order
+		Map<String, List<CarRegistration>> map = (fileMap == null)?
+										new LinkedHashMap<String, List<CarRegistration>>(): fileMap;		//import list
 		if(map.get("regList")!=null) { 	//registration details
 			List list = map.get("regList");
 			list.add(carReg);
 			map.put("regList",list);
 		}else {
-			List list = new ArrayList();		//ctrl space
+			List list = new ArrayList();		
 			list.add(carReg);
 			//map.put("regList",list);
 			map.put(carReg.getRegID(), list);
 		}
-		Utility.storeData(map);		//What is exception
+		Utility.storeData(map,"add");		//What is exception
 		System.out.println("The details are "+map);
+	}
+	//return last entry of map, add to previous value for reg num
+	public Entry<String,List<CarRegistration>> getLastEntry(Map<String,List<CarRegistration>> map){
+		List<Entry<String,List<CarRegistration>>> entryList =  new ArrayList<Map.Entry<String,List<CarRegistration>>>(map.entrySet());
+		Entry<String, List<CarRegistration>> lastEntry = (entryList.size()>0)?entryList.get(entryList.size()-1):null;
+		return lastEntry ;
 	}
 	public boolean checkAlphabet(String input) {
 		Scanner scanner = new Scanner(System.in);
@@ -208,7 +221,7 @@ public class CarRegistrationMenu {
 	}
 	public void editCarRegNum(String regID) throws Exception{
 		Scanner scanner1 = new Scanner(System.in);
-		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		
+		Map<String, List<CarRegistration>> map = Utility.loadData();		
 		String inputValue;
 		CarRegistration obj = (null!=map.get(regID))? map.get(regID).get(0): null;
 		if(null != obj) {
@@ -219,7 +232,7 @@ public class CarRegistrationMenu {
 			List<CarRegistration> list = new ArrayList<>();
 			list.add(obj);
 			map.put(regID, list);
-			Utility.storeData(map);		//What is exception
+			Utility.storeData(map, "edit");		//What is exception
 			System.out.println("after edit map is "+map);
 		}else {
 			System.out.println("Car ID doesnt exist.");
@@ -227,7 +240,7 @@ public class CarRegistrationMenu {
 	}
 	public void editCarModel(String regID) throws Exception {
 		Scanner scanner1 = new Scanner(System.in);
-		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		
+		Map<String, List<CarRegistration>> map = Utility.loadData();		
 		String inputValue;
 		CarRegistration obj = map.get(regID).get(0);
 		if(null != obj) {
@@ -238,7 +251,7 @@ public class CarRegistrationMenu {
 			List<CarRegistration> list = new ArrayList<>();
 			list.add(obj);
 			map.put(regID, list);
-			Utility.storeData(map);	
+			Utility.storeData(map, "edit");	
 			System.out.println("after edit map is "+map);
 		}else {
 			System.out.println("Car ID doesnt exist.");
@@ -246,7 +259,7 @@ public class CarRegistrationMenu {
 	}
 	public void editCarNumber(String regID) throws Exception {
 		Scanner scanner1 = new Scanner(System.in);
-		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		
+		Map<String, List<CarRegistration>> map = Utility.loadData();		
 		String inputValue;
 		CarRegistration obj = map.get(regID).get(0);
 		if(null != obj) {
@@ -257,7 +270,7 @@ public class CarRegistrationMenu {
 			List<CarRegistration> list = new ArrayList<>();
 			list.add(obj);
 			map.put(regID, list);
-			Utility.storeData(map);	
+			Utility.storeData(map, "edit");	
 			System.out.println("after edit map is "+map);
 		}else {
 			System.out.println("Car ID doesnt exist.");
@@ -265,7 +278,7 @@ public class CarRegistrationMenu {
 	}
 	public void editCarDescription(String regID) throws Exception  {
 		Scanner scanner1 = new Scanner(System.in);
-		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		
+		Map<String, List<CarRegistration>> map = Utility.loadData();		
 		String inputValue;
 		CarRegistration obj = map.get(regID).get(0);
 		if(null != obj) {
@@ -276,7 +289,7 @@ public class CarRegistrationMenu {
 			List<CarRegistration> list = new ArrayList<>();
 			list.add(obj);
 			map.put(regID, list);
-			Utility.storeData(map);
+			Utility.storeData(map, "edit");
 			System.out.println("after edit map is "+map);
 		}else {
 			System.out.println("Car ID doesnt exist.");
@@ -284,7 +297,7 @@ public class CarRegistrationMenu {
 	}
 	public void editCarBasePrice(String regID) throws Exception {
 		Scanner scanner1 = new Scanner(System.in);
-		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		
+		Map<String, List<CarRegistration>> map = Utility.loadData();		
 		String inputValue;
 		CarRegistration obj = map.get(regID).get(0);
 		if(null != obj) {
@@ -295,31 +308,39 @@ public class CarRegistrationMenu {
 			List<CarRegistration> list = new ArrayList<>();
 			list.add(obj);
 			map.put(regID, list);
-			Utility.storeData(map);
+			Utility.storeData(map, "edit");
 			System.out.println("after edit map is "+map);
 		}else {
 			System.out.println("Car ID doesnt exist.");
 		}
 	}
 	public void editAll(String regID) throws Exception{
-		Map<String, List<CarRegistration>> map = CarRentalModel.reg;
+		Map<String, List<CarRegistration>> map = Utility.loadData();
 		editCarModel(regID);
 		editCarBrand(regID);
 		editCarNumber(regID);
 		editCarDescription(regID);
 		editCarBasePrice(regID);
 		editCarRegNum(regID);
-		Utility.storeData(map);
+		Utility.storeData(map, "edit");
 	}
 	public void deleteCar(String regID) throws Exception{
 		Scanner scanner1 = new Scanner(System.in);
 		Utility.loadData();
 		
-		Map<String, List<CarRegistration>> map = CarRentalModel.reg;
-		System.out.println(map);
-		String inputValue;
-		System.out.println("Are you sure to delete "+regID+" : (Y/N)");
-		inputValue = scanner1.nextLine();
+		boolean isInvalid = false;
+		
+		Map<String, List<CarRegistration>> map = Utility.loadData();
+		//System.out.println(map);
+		String inputValue = "";
+		if(map.containsKey(regID)) {
+			System.out.println("Are you sure to delete "+regID+" : (Y/N)");
+			inputValue = scanner1.nextLine();
+		}else {
+			System.out.println("Invalid registration ID");
+			isInvalid = true;
+		}
+		
 		if(inputValue.equalsIgnoreCase("Y")) {
 			try {
 				map.remove(regID);
@@ -330,22 +351,14 @@ public class CarRegistrationMenu {
 		}else if(inputValue.equalsIgnoreCase("N")) {
 			System.out.println("You selected not to delete car.");
 		}else {
-			System.out.println("INVALID OPTION! Please try again.");
+			if(!isInvalid)
+				System.out.println("INVALID OPTION! Please try again.");
 		}
-		Utility.storeData(map);
-		//System.out.println("After deletion, map is "+map);
+		Utility.storeData(map, "delete");
+		
 
 	}
-	/*private void editCarBrand(String regID, CarRegistration obj) {
-		Scanner scanner1 = new Scanner(System.in);
-		Map<String, List<CarRegistration>> map = CarRentalModel.reg;		
-		String inputValue;
-		System.out.println("Confirm car brand to edit: ");
-		inputValue = scanner1.nextLine();
-		System.out.println("Reg ID"+regID);
-		obj = map.get(regID).get(0);
-		obj.setCarBrand(inputValue);
-	}*/
+	
 	public String getRegID(String msg) {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println(" Confirm car registration ID to " + msg + " :");
@@ -364,7 +377,7 @@ public class CarRegistrationMenu {
 		List<CarRegistration> list = new ArrayList<>();
 		list.add(obj);
 		map.put(regID, list);
-		Utility.storeData(map);
+		Utility.storeData(map, "edit");
 		System.out.println("after edit map is "+map);
 	}
 

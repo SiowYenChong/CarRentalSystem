@@ -2,6 +2,7 @@ package com.system.rental;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.sql.Timestamp;		//to have timestamp: hh mm ss
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -20,36 +21,159 @@ import com.system.util.Utility;
 
 public class CarRentalProcess {
 	
-	public Map <String,List<CarRegistration>> getAvailableCars() throws Exception{
+	public Map <String,List<CarRegistration>> getAvailableCars(String custID) throws Exception{
 			Map <String,List<CarRegistration>> map = Utility.loadData();
 		for(Map.Entry <String,List<CarRegistration>> set: map.entrySet()) {
 			String key = set.getKey();
 			List<CarRegistration> cars = set.getValue();
 			if(!cars.isEmpty()) {
 				CarRegistration car = cars.get(0);
-				/*if(car.getEndDate() != null) {
-					String hiredBy = (null != car.getUserID())? "Hired by = "+ car.getUserID(): "";
-					System.out.println( "regID = " + car.getRegID()+ ", regNumber = " +car.getRegNumber()+ ", carBrand = " + car.getCarBrand() + 
-					"\n carModel = " + car.getCarModel() + ", carNumber = " + car.getCarNumber()+ " carDescription = " + car.getCarDescription() + 
-					"\n  price(Per Hour) = "+ car.getFormat(car.getBasePrice())+ ", carRental = "+ car.getFormat(car.getCarRental())+ 
-					"\n startDate = "+ car.formatDate(""+car.getStartDate()) + ", endDate = " + car.formatDate(""+car.getEndDate())+
-					"\n This car is ONLY AVAILABLE BEFORE "+ car.formatDate(""+car.getStartDate()) + " OR AFTER "+ car.formatDate(""+car.getEndDate())+
-					"\n " + hiredBy + 
-					"\n -------------------------------------------------------------------------------------------------------");
-				}else {
+				if(custID.equals(car.getUserID())) {
+					car.setDetails(true);
 					System.out.println(car);
-				}*/ System.out.println(car);
+				}else {
+					car.setDetails(false);
+					System.out.println(car);
+				}
 			}
-			
 		}
 		return map;		
 	}
-	public void returnCar() {
-		System.out.println("");
-		//continue
+	public void returnCar(CarRegistration car) throws Exception{
+		Scanner scanner = new Scanner(System.in);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+		LocalDateTime currentDate = LocalDateTime.now(); 
+		String current = formatter.format(currentDate);
+		LocalDateTime currentDateTime = LocalDateTime.parse(current, formatter);
+		
+		String endDate = formatter.format(car.getEndDate());
+		double actualRent = getRent(car.getBasePrice(), endDate, current);
+		
+		LocalDateTime endDatets = LocalDateTime.parse(endDate);
+		LocalDateTime currentDatets = LocalDateTime.parse(current);
+		long hours = Duration.between(endDatets, currentDatets).toHours();
+		if(car.getEndDate().isBefore(currentDate) && hours < 1) {
+			actualRent = getRent(car.getBasePrice(), endDate, current);
+			//System.out.println("Actual rent will be "+(actualRent-car.getCarDeposit()));
+		}else {
+			System.out.println("You are "+hours+" hours late for returning car.");
+			System.out.println("You will be penalized with (2*"+ hours + "*" + car.getBasePrice() +") : RM" + (2*hours*car.getBasePrice()));
+			car.setPenalty(2*hours*car.getBasePrice());
+		}
+		
+		/*System.out.println("Enter rented car registration ID to return: ");
+		String inputCarID = scanner.nextLine();
+		if(inputCarID.equalsIgnoreCase(car.getRegID())) {
+			System.out.println("Confirm return car "+inputCarID+"? (Y/N)");
+			String ans = scanner.nextLine();
+			if(ans.equalsIgnoreCase("Y")) {
+				if(actualRent > 0) {
+					System.out.println("\n Amount to be paid = "+ (actualRent + car.getPenalty())) ;
+					System.out.println("Directing to payment gateway...");
+					System.out.println("You have successfully returned the car");
+					releaseCar(car);
+				}	
+				else {
+					System.out.println("\n Amount to be refunded = "+ (-actualRent));
+					System.out.println("The amount will be refunded to your input payment method in 3 working days");
+				}
+			}else if(ans.equalsIgnoreCase("N")) {
+				
+			}else {
+				System.out.println("Invalid input.");
+			}
+		
+		}
+		*/
 	}
-	public void showHiredCars() throws Exception{
-			Map <String,List<CarRegistration>> hiredCarMap = Utility.loadData();
+	
+	public void releaseCar(CarRegistration returnCar) throws Exception{
+
+		//Map <String,List<CarRegistration>> hiredCarMap = Utility.loadData();
+		Map <String,List<CarRegistration>> hiredCarMap = getHiredCars();
+		boolean noCar = true;
+		for(Map.Entry <String,List<CarRegistration>> set: hiredCarMap.entrySet()) {
+			String key = set.getKey();
+			List<CarRegistration> cars = set.getValue();
+			if(!cars.isEmpty()) {
+				for(CarRegistration car : cars) {
+					if(car.getRegID().equals(returnCar.getRegID())) {
+						car.setUserID(null);
+						car.setStartDate(null);
+						car.setEndDate(null);
+						car.setCarRental(0);
+						car.setCarDeposit(0);
+					}
+					
+				}
+			}
+		}
+		Utility.storeData(hiredCarMap, "edit");
+	}
+	public void showHiredCars(String customerID) throws Exception{
+		Scanner scanner = new Scanner(System.in);
+		Map <String,List<CarRegistration>> hiredCarMap = Utility.loadData();
+		
+		boolean noCar = true;
+		List <CarRegistration> hiredCars = new ArrayList <CarRegistration> ();
+		for(Map.Entry <String,List<CarRegistration>> set: hiredCarMap.entrySet()) {
+			String key = set.getKey();
+			List<CarRegistration> cars = set.getValue();
+			if(!cars.isEmpty()) {
+				for(CarRegistration car : cars) {
+					if(car.getUserID() != null && !"null".equals(car.getUserID()) &&  customerID.equals(car.getUserID())) {
+						hiredCars.add(car);
+						car.setDetails(true);
+						returnCar(car);
+						System.out.println(car);
+					}else {
+						noCar = false;
+					}
+				}
+			}
+		}
+		if(noCar) {
+		System.out.println("Enter rented car registration ID to return: ");
+		String inputCarID = scanner.nextLine();
+		if(verifyCarByRegID(hiredCars, inputCarID)) {
+			System.out.println("Confirm return car "+inputCarID+"? (Y/N)");
+			String ans = scanner.nextLine();
+			if(ans.equalsIgnoreCase("Y")) {
+				CarRegistration car = hiredCarMap.get(inputCarID).get(0);
+				if(car != null && car.getActualRent() > 0) {
+					System.out.println("\n Amount to be paid = "+ (car.getActualRent() + car.getPenalty())) ;
+					System.out.println("Directing to payment gateway...");
+					System.out.println("You have successfully returned the car");
+					releaseCar(car);
+				}	
+				else {
+					System.out.println("\n Amount to be refunded = "+ (-car.getActualRent() ));
+					System.out.println("The amount will be refunded to your input payment method in 3 working days");
+				}
+			}else if(ans.equalsIgnoreCase("N")) {
+				
+			}else {
+				System.out.println("Invalid input.");
+			}
+		
+		}
+		}
+		if(noCar)
+			System.out.println("\t\t\t There is no hired car.");
+		
+	}
+	public boolean verifyCarByRegID(List<CarRegistration> cars, String regID) {
+		boolean carExist = false;
+		for(CarRegistration car : cars) {
+			if(car.getRegID().equals(regID)) {
+				carExist = true;
+				break;
+			}
+		}
+		return carExist;
+	}
+	public void hiredCarsByCustomer(String custID) throws Exception{
+		Map <String,List<CarRegistration>> hiredCarMap = Utility.loadData();
 		
 		boolean noCar = true;
 		for(Map.Entry <String,List<CarRegistration>> set: hiredCarMap.entrySet()) {
@@ -57,7 +181,8 @@ public class CarRentalProcess {
 			List<CarRegistration> cars = set.getValue();
 			if(!cars.isEmpty()) {
 				CarRegistration car = cars.get(0);
-				if(car.getStartDate() != null && car.getEndDate() != null) {
+				if(car.getStartDate() != null && car.getEndDate() != null && custID.equals(car.getUserID())) {
+					car.setDetails(true);
 					System.out.println(car);
 					noCar = false;
 				}
@@ -66,6 +191,25 @@ public class CarRentalProcess {
 		if(noCar)
 			System.out.println("\t\t\t There is no hired car.");
 		
+	}
+	public Map<String,List<CarRegistration>> getHiredCars() throws Exception{ 
+		Map <String,List<CarRegistration>> hiredCarMap = Utility.loadData();
+		Map <String,List<CarRegistration>> hiredCars = new LinkedHashMap <String,List<CarRegistration>>();
+		boolean noCar = true;
+		for(Map.Entry <String,List<CarRegistration>> set: hiredCarMap.entrySet()) {
+			String key = set.getKey();
+			List<CarRegistration> cars = set.getValue();
+			if(!cars.isEmpty()) {
+				for(CarRegistration car : cars) {
+					if(car.getStartDate() != null && car.getEndDate() != null) {
+						//List<CarRegistration> list = new ArrayList<CarRegistration> ();
+						//list.add(car);				//add carObj into list
+						hiredCars.put(key,cars);
+					}
+				}
+			}
+		}
+		return hiredCars;
 	}
 	public String inputDate(String input) throws Exception {
 		Scanner scanner = new Scanner(System.in);
@@ -86,12 +230,25 @@ public class CarRentalProcess {
 		CarRegistration car = map.get(regID).get(0);
 		return compareCurrentDate(car.getEndDate());
 	}
+	public boolean validateDates(String startDate, String endDate) {
+		//check date valid?
+		boolean result = false;
+		 DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"); 
+		 try {
+			 format.parse(startDate);
+			 format.parse(endDate);
+			 result = true;
+		 }catch (Exception e){
+			 System.out.println("Kindly enter date in yyyy-MM-dd HH:mm");
+		 }
+		return result; 
+	}
 	public void hireCar(Map <String,List<CarRegistration>> map, String custID) throws Exception{
 		
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Please enter registration ID of car: ");
 		String regID = scanner.nextLine();
-		if(map.get(regID) != null) {
+		if(map.get(regID) != null) { //pass map here
 			String stDate = "";
 			String enDate = "";
 			do {
@@ -114,7 +271,8 @@ public class CarRentalProcess {
 				 * date include hrs
 				*/
 				
-					CarRegistration obj = map.get(regID).get(0);
+					List<CarRegistration> objList = map.get(regID);
+					for(CarRegistration obj : objList) {
 					boolean isAlreadyHired = (obj.getStartDate() != null && obj.getEndDate()!=null)? true: false;
 					if(!"null".equals(obj.getStartDate()) && !"null".equals(obj.getEndDate())) {
 						LocalDateTime inputStDate = LocalDateTime.parse(stDate);
@@ -128,7 +286,7 @@ public class CarRentalProcess {
 							double deposit =  getDeposit(obj.getBasePrice(), stDate, enDate);
 							if(!isError) {
 								System.out.println("This car's base price is "+ Utility.getFormat(obj.getBasePrice()));
-								System.out.println("Initial deposit for this car will be RM" + deposit);
+								System.out.println("Initial deposit for this car to be paid now will be RM" + deposit);
 								System.out.println("Are you sure you want to rent this car? (Y/N): ");
 								String agree = scanner.nextLine();
 								
@@ -142,12 +300,13 @@ public class CarRentalProcess {
 									obj.setCarRental(rent);
 									obj.setUserID(custID);
 									obj.setCarDeposit(deposit);
+									obj.setCarRental(rent);
 									List list = new ArrayList();		//ctrl space
 									list.add(obj);
 									//map.put("regList",list);
 									map.put(regID, list);
-									Utility.storeData(map);
-									System.out.println("Total rent of this car will be: RM"+rent);
+									Utility.storeData(map, "edit");
+									System.out.println("Total rent to be paid after return car will be: RM"+rent);
 									System.out.println("Initial deposit for this car will be RM" + deposit);
 									System.out.println("Directing to payment gateway..");
 									System.out.println("You have booked the car.");
@@ -158,7 +317,7 @@ public class CarRentalProcess {
 					}else {
 					System.out.println("Invalid option.");
 					}
-				
+					}
 		
 			
 		}else {
@@ -249,19 +408,7 @@ public class CarRentalProcess {
 		//System.out.println(days+" days "+hours+" hrs");
 		return rent;
 	}
-	public boolean validateDates(String startDate, String endDate) {
-		//check date valid?
-		boolean result = false;
-		 DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"); 
-		 try {
-			 format.parse(startDate);
-			 format.parse(endDate);
-			 result = true;
-		 }catch (Exception e){
-			 System.out.println("Kindly enter date in yyyy-MM-dd HH:mm");
-		 }
-		return result; 
-	}
+	
 	public boolean validateDate(String startDate) {
 		//check date valid?
 		boolean result = false;
@@ -316,4 +463,6 @@ public class CarRentalProcess {
 		
 		return result;
 	}
+	
 }
+

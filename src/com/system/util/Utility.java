@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import com.system.model.CarRentalModel;
+import com.system.pojo.Admin;
 import com.system.pojo.CarRegistration;
 import com.system.pojo.Customer;
 
@@ -233,6 +234,17 @@ public class Utility {
 		File file = new File (fileName);
 		Scanner scanner = new Scanner(file);							//reading from file
 		Map<String, List<Customer>> map = CarRentalModel.user;		//import list
+		Admin admin1 = new Admin();
+		Customer adminCust = new Customer (); //car object
+		adminCust.setCustomerID(admin1.getCustomerID());
+		adminCust.setCustomerName(admin1.getCustomerName());
+		adminCust.setCustomerBirthDate(admin1.getCustomerBirthDate());
+		adminCust.setCustomerMobileNumber(admin1.getCustomerMobileNumber());
+		adminCust.setCustomerEmail(admin1.getCustomerEmail());
+		adminCust.setCustomerAddress(admin1.getCustomerAddress());
+		adminCust.setPassword(admin1.getPassword());
+		List adminList = new ArrayList();
+		adminList.add(adminCust);
 		
 		while(scanner.hasNextLine()) {
 			Customer cust = new Customer (); //car object
@@ -248,14 +260,16 @@ public class Utility {
 			cust.setPassword(dataArray[6]);
 			
 			if(map.get(dataArray[0])!=null) { 					//registration details
-				List list = map.get(dataArray[0]);
-				list.add(cust);
-				map.put(dataArray[0],list);
+				/*
+				 * List list = map.get(dataArray[0]); list.add(cust);
+				 * map.put(dataArray[0],list);
+				 */
 			}else {
 				List list = new ArrayList();				//ctrl space
 				list.add(cust);
 				//map.put("regList",list);
 				map.put(cust.getCustomerID(), list);
+				map.put(adminCust.getCustomerID(), adminList);
 			}
 		}
 		return map;

@@ -3,7 +3,9 @@ import java.util.Map;
 import java.util.Scanner;
 
 import com.system.model.CarRentalModel;
+import com.system.pojo.Customer;
 import com.system.pojo.Login;
+import com.system.util.Utility;
 
 public class LoginTest {
 
@@ -12,10 +14,9 @@ public class LoginTest {
 		boolean result = false;
 		String id, password;
 		boolean idCorrect,correctPassword;
-
 		do
 		{
-		System.out.println("\nPlease enter email: ");
+		System.out.println("Please enter email: ");
     	id = input.next();
     	System.out.println("Password: ");
     	password = input.next();
@@ -29,9 +30,9 @@ public class LoginTest {
     		String msg = id.substring(0, id.indexOf("@"));
     		
     		if(id.contains("admin")) 
-    			System.out.println("Welcome Admin "+msg);
+    			System.out.println("Welcome Admin " + msg + "("+Utility.getCustomer(id).getCustomerID()+")");
     		else 
-    			System.out.println("Welcome User "+msg);
+    			System.out.println("Welcome User " + msg + "("+Utility.getCustomer(id).getCustomerID()+")");
     		
     		Map<String,Boolean> loginUsers = CarRentalModel.loginUsers;
     		loginUsers.put(id, true);										

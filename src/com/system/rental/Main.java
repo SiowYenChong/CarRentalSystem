@@ -9,16 +9,14 @@
 package com.system.rental;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Scanner;
+import com.system.pojo.Admin;
 import com.system.pojo.CarRegistration;
 import com.system.pojo.Customer;
 import com.system.util.Utility;
 
 public class Main {
-	
-	public static void main(String[] args)throws Exception {	//handling error
-		int inputValue;
-		
+	public static void displayMenu() {
 		System.out.println("WELCOME TO CAR RENTAL SYSTEM");
 		System.out.println("Options:");
 		System.out.println("1. Login");	//[done]
@@ -46,7 +44,11 @@ public class Main {
 		System.out.println("   53. Hire a car");
 		System.out.println("6. Return a Car");
 		System.out.println("7. Display customer details");
-		System.out.println("8. Logout");    
+	}
+	public static void main(String[] args)throws Exception {	//handling error
+		int inputValue;
+		displayMenu();
+		    
 		String email = "";
 		//Utility.loadData(System.getProperty("user.dir")+"/inputData.txt");
 		//Utility.loadData();
@@ -57,31 +59,37 @@ public class Main {
 		CustomerMenu custObj = new CustomerMenu();
 		String loggedInCustomer;
 		CarRentalProcess carRental = new CarRentalProcess();
+		Admin admin = new Admin();
+		Customer cust = new Customer();
 		do {
-			inputValue=Input.inputInt("Select option: ");
+			inputValue=Input.inputInt("Select option (Press 2 - View menu): ");
 			switch(inputValue) {
 			case 1:
-				System.out.print("LOGIN");
+				System.out.println("LOGIN");
 				LoginTest loginObj = new LoginTest();
 				email = loginObj.logIn();							//("user1", "abcd123");											//("admin", "abcd123");
 				break;
 			case 2:
-				System.out.print("MAIN MENU");
+				displayMenu();
 				break;
 			case 3:
-				loggedInCustomer = Utility.validUser(email);	
+				loggedInCustomer = Utility.validUser(email);
+				cust = Utility.getCustomer(loggedInCustomer);
 				//System.out.print("REGISTER CUSTOMER");
 				if(!"".equals(loggedInCustomer)) {
 					custID = custObj.customerRegistration(email);
 				}
 				break;
 			case 31:
-				System.out.println("EDIT EXISTING CUSTOMER NAME");
+				loggedInCustomer = Utility.validUser(email);		//check if user login
+				if(!"".equals(loggedInCustomer))
+					System.out.println("EDIT EXISTING CUSTOMER NAME");
 				//regID = carObj.getRegID();
 				loggedInCustomer = Utility.validUser(email);		//check if user login
 				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
 					custID = custObj.getCustID("edit");
-					custObj.editCustomerName(custID, true);
+					if(custObj.validateCust(cust.getCustomerID(), custID))
+						custObj.editCustomerName(custID, true);
 				}else {
 					if("".equals(email)) {
 						//System.out.println("User is not logged in");  
@@ -92,11 +100,13 @@ public class Main {
 				}
 				break;
 			case 32:
-				System.out.print("EDIT EXISTING CUSTOMER BIRTH DATE");
+				System.out.println("EDIT EXISTING CUSTOMER BIRTH DATE");
 				loggedInCustomer = Utility.validUser(email);		//check if user login
+				cust = Utility.getCustomer(loggedInCustomer);
 				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
 					custID = custObj.getCustID("edit");
-					custObj.editCustomerBirthDate(custID, true);
+					if(custObj.validateCust(cust.getCustomerID(), custID))
+						custObj.editCustomerBirthDate(custID, true);
 				}else {
 					if("".equals(email)) {
 						//System.out.println("User is not logged in");  
@@ -107,11 +117,13 @@ public class Main {
 				}
 				break;
 			case 33:
-				System.out.print("EDIT EXISTING CUSTOMER MOBILE NUMBER");
+				System.out.println("EDIT EXISTING CUSTOMER MOBILE NUMBER");
 				loggedInCustomer = Utility.validUser(email);		//check if user login
+				cust = Utility.getCustomer(loggedInCustomer);
 				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
 					custID = custObj.getCustID("edit");
-					custObj.editCustomerMobileNumber(custID, true);
+					if(custObj.validateCust(cust.getCustomerID(), custID))
+						custObj.editCustomerMobileNumber(custID, true);
 				}else {
 					if("".equals(email)) {
 						//System.out.println("User is not logged in");  
@@ -122,11 +134,13 @@ public class Main {
 				}
 				break;
 			case 34:
-				System.out.print("EDIT EXISTING CUSTOMER EMAIL");
+				System.out.println("EDIT EXISTING CUSTOMER EMAIL");
 				loggedInCustomer = Utility.validUser(email);		//check if user login
+				cust = Utility.getCustomer(loggedInCustomer);
 				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
 					custID = custObj.getCustID("edit");
-					custObj.editCustomerEmail(custID, true);
+					if(custObj.validateCust(cust.getCustomerID(), custID))
+						custObj.editCustomerEmail(custID, true);
 				}else {
 					if("".equals(email)) {
 						//System.out.println("User is not logged in");  
@@ -137,11 +151,13 @@ public class Main {
 				}
 				break;
 			case 35:
-				System.out.print("EDIT EXISTING CUSTOMER ADDRESS");
+				System.out.println("EDIT EXISTING CUSTOMER ADDRESS");
 				loggedInCustomer = Utility.validUser(email);		//check if user login
+				cust = Utility.getCustomer(loggedInCustomer);
 				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
 					custID = custObj.getCustID("edit");
-					custObj.editCustomerAddress(custID, true);
+					if(custObj.validateCust(cust.getCustomerID(), custID))
+						custObj.editCustomerAddress(custID, true);
 				}else {
 					if("".equals(email)) {
 						//System.out.println("User is not logged in");  
@@ -153,10 +169,12 @@ public class Main {
 				break;
 			case 36:
 				loggedInCustomer = Utility.validUser(email);		//check if user login
+				cust = Utility.getCustomer(loggedInCustomer);
 				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
-					System.out.print("EDIT ALL EXISTING PROPERTIES");
+					System.out.println("EDIT ALL EXISTING PROPERTIES");
 					custID = custObj.getCustID("edit");
-					custObj.editAll(custID);
+					if(custObj.validateCust(cust.getCustomerID(), custID))
+						custObj.editAll(custID);
 				}else {
 					if("".equals(email)) {
 						//System.out.println("User is not logged in");  
@@ -168,9 +186,11 @@ public class Main {
 				break;
 			case 37:
 				loggedInCustomer = Utility.validUser(email);		//check if user login
-				System.out.print("DELETE EXISTING CUSTOMER REGISTRATION");
+				cust = Utility.getCustomer(loggedInCustomer);
+				System.out.println("DELETE EXISTING CUSTOMER REGISTRATION");
 				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
 					custID = custObj.getCustID("delete");
+					if(custObj.validateCust(cust.getCustomerID(), custID))
 					custObj.deleteCustomer(custID);
 				}else {
 					if("".equals(email)) {
@@ -182,106 +202,116 @@ public class Main {
 				}
 				break;
 			case 4:
+				Scanner scanner = new Scanner(System.in);
 				loggedInCustomer = Utility.validUser(email);
-				System.out.print("REGISTER NEW CAR");
-				if(!"".equals(loggedInCustomer)) {
-					carObj.doRegistration();
+				if(!"".equals(loggedInCustomer))
+					System.out.println("REGISTER NEW CAR");
+				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList() && email.equals(admin.getCustomerEmail())) {
+						carObj.doRegistration();
+				}else {
+					if("".equals(email)) {
+						//System.out.println("User is not logged in");  
+					}else {
+						System.out.println("Only admin has access to this functionality");
+					}
 				}
 				break;
 			case 41:
 				loggedInCustomer = Utility.validUser(email);		//check if user login
-				System.out.print("EDIT EXISTING CAR REGISTRATION NUMBER");
-				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
+				if(!"".equals(loggedInCustomer))
+					System.out.println("\nEDIT EXISTING CAR REGISTRATION NUMBER");
+				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList() && email.equals(admin.getCustomerEmail())) {
 					regID = carObj.getRegID("edit");
 					carObj.editCarRegNum(regID);
 				}else {
 					if("".equals(email)) {
 						//System.out.println("User is not logged in");  
 					}else {
-						System.out.println("There is no registered car.");  
-						System.out.println("Please select 4 to register car.");
+						System.out.println("Only admin has access to this functionality");
+						
 					}
 				}
 				break;
 			case 42:
 				loggedInCustomer = Utility.validUser(email);		//check if user login
-				System.out.println("EDIT EXISTING CAR BRAND");
-				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
+				if(!"".equals(loggedInCustomer))
+					System.out.println("EDIT EXISTING CAR BRAND");
+				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList() && email.equals(admin.getCustomerEmail())) {
 					regID = carObj.getRegID("edit");
 					carObj.editCarBrand(regID);
 				}else {
 					if("".equals(email)) {
 						//System.out.println("User is not logged in");  
 					}else {
-						System.out.println("There is no registered car.");  
-						System.out.println("Please select 4 to register car.");
+						System.out.println("Only admin has access to this functionality");
 					}
 				}
 				break;
 			case 43:
 				loggedInCustomer = Utility.validUser(email);		//check if user login
-				System.out.print("EDIT EXISTING CAR MODEL");
-				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
+				if(!"".equals(loggedInCustomer))
+					System.out.println("EDIT EXISTING CAR MODEL");
+				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList() && email.equals(admin.getCustomerEmail())) {
 					regID = carObj.getRegID("edit");
 					carObj.editCarModel(regID);
 				}else {
 					if("".equals(email)) {
 						//System.out.println("User is not logged in");  
 					}else {
-						System.out.println("There is no registered car.");  
-						System.out.println("Please select 3 to register car.");
+						System.out.println("Only admin has access to this functionality");
 					}
 				}
 				break;
 			case 44:
 				loggedInCustomer = Utility.validUser(email);		//check if user login
-				System.out.print("EDIT EXISTING CAR NUMBER");
-				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
+				if(!"".equals(loggedInCustomer))
+					System.out.println("EDIT EXISTING CAR NUMBER");
+				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList() && email.equals(admin.getCustomerEmail())) {
 					regID = carObj.getRegID("edit");
 					carObj.editCarNumber(regID);
 				}else {
 					if("".equals(email)) {
 						//System.out.println("User is not logged in");  
 					}else {
-						System.out.println("There is no registered car.");  
-						System.out.println("Please select 3 to register car.");
+						System.out.println("Only admin has access to this functionality");
 					}
 				}
 				break;
 			case 45:
 				loggedInCustomer = Utility.validUser(email);
-				System.out.print("EDIT EXISTING CAR DESCRIPTION");
-				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
+				if(!"".equals(loggedInCustomer))
+					System.out.println("EDIT EXISTING CAR DESCRIPTION");
+				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList() && email.equals(admin.getCustomerEmail())) {
 					regID = carObj.getRegID("edit");
 					carObj.editCarDescription(regID);
 				}else {
 					if("".equals(email)) {
 						//System.out.println("User is not logged in");  
 					}else {
-						System.out.println("There is no registered car.");  
-						System.out.println("Please select 3 to register car.");
+						System.out.println("Only admin has access to this functionality");
 					}
 				}
 				break;
 			case 46:
 				loggedInCustomer = Utility.validUser(email);
-				System.out.print("EDIT EXISTING BASE PRICE");
-				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
+				if(!"".equals(loggedInCustomer))
+					System.out.println("EDIT EXISTING BASE PRICE");
+				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList() && email.equals(admin.getCustomerEmail())) {
 					regID = carObj.getRegID("edit");
 					carObj.editCarBasePrice(regID);
 				}else {
 					if("".equals(email)) {
 						//System.out.println("User is not logged in");  
 					}else {
-						System.out.println("There is no registered car.");  
-						System.out.println("Please select 3 to register car.");
+						System.out.println("Only admin has access to this functionality");
 					}
 				}
 				break;
 			case 47:
 				loggedInCustomer = Utility.validUser(email);
-				System.out.print("EDIT ALL EXISTING PROPERTIES");
-				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
+				if(!"".equals(loggedInCustomer))
+					System.out.println("EDIT ALL EXISTING PROPERTIES");
+				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList() && email.equals(admin.getCustomerEmail())) {
 					regID = carObj.getRegID("edit");
 					carObj.editCarRegNum(regID);
 					carObj.editCarBasePrice(regID);
@@ -293,35 +323,34 @@ public class Main {
 					if("".equals(email)) {
 						//System.out.println("User is not logged in");  
 					}else {
-						System.out.println("There is no registered car.");  
-						System.out.println("Please select 3 to register car.");
+						System.out.println("Only admin has access to this functionality");
 					}
 				}
 				break;
 			case 48:
 				loggedInCustomer = Utility.validUser(email);
-				//System.out.print("DELETE EXISTING CAR REGISTRATION");
-				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
+				if(!"".equals(loggedInCustomer))
+					System.out.print("DELETE EXISTING CAR REGISTRATION");
+				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList() && email.equals(admin.getCustomerEmail())) {
 					regID = carObj.getRegID("delete");
 					carObj.deleteCar(regID);
 				}else {
 					if("".equals(email)) {
 						//System.out.println("User is not logged in");  
 					}else {
-						System.out.println("There is no registered car.");  
-						System.out.println("Please select 3 to register car.");
+						System.out.println("Only admin has access to this functionality");
 					}
 				}
 				break;
 			case 5:
-				System.out.print("RENT A CAR");  //Create menu -
+				System.out.println("RENT A CAR");  //Create menu -
 				System.out.println(" \n");
 				break;
 			case 51:
 				System.out.println("\n\t\t\t SHOW AVAILABLE CARS ");  //Create menu -
 				System.out.println("-------------------------------------------------------------------------------------------------------");	
 				loggedInCustomer = Utility.validUser(email);		//check if user login
-				Customer cust = Utility.getCustomer(loggedInCustomer); //pass customer id
+				cust = Utility.getCustomer(loggedInCustomer); //pass customer id
 				carRental.getAvailableCars(cust.getCustomerID());
 				System.out.println(" \n");
 				break;
@@ -359,13 +388,24 @@ public class Main {
 				
 				break;
 			case 7:
-				System.out.println("CUSTOMER DETAILS (ADMIN ONLY)");
+				loggedInCustomer = Utility.validUser(email);
+				if(!"".equals(loggedInCustomer))
+					System.out.println("CUSTOMER DETAILS (ADMIN ONLY)");
+				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList() && email.equals(admin.getCustomerEmail())) {
+					custObj.showCustList();
+				}else {
+					if("".equals(email)) {
+						
+					}else {
+						System.out.println("Only admin has access to this functionality");
+					}
+				}
 				break;
 			case 8:
-				System.out.print("LOGOUT");
+				System.out.println("LOGOUT");
 				break;
 			default:
-				System.out.print("INVALID OPTION!");
+				System.out.println("INVALID OPTION!");
 				break;
 			}
 		}while(true);

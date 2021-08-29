@@ -59,5 +59,11 @@ public class Admin {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+	public boolean isAdmin (String emailID, String password) {
+		boolean result = false;
+		if(getCustomerEmail().equals(emailID) && getPassword().equals(password)) {
+			result = true;
+		}
+		return result;
+	}
 }

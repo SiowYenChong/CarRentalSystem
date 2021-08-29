@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import com.system.model.CarRentalModel;
+import com.system.pojo.Admin;
 import com.system.pojo.CarRegistration;
 import com.system.util.Utility;
 
@@ -47,50 +48,29 @@ public class CarRentalProcess {
 		LocalDateTime currentDateTime = LocalDateTime.parse(current, formatter);
 		
 		String endDate = formatter.format(car.getEndDate());
-		double actualRent = getRent(car.getBasePrice(), endDate, current);
+		String startDate = formatter.format(car.getStartDate());
+		double lateRent;
 		
 		LocalDateTime endDatets = LocalDateTime.parse(endDate);
+		LocalDateTime startDatets = LocalDateTime.parse(startDate);
 		LocalDateTime currentDatets = LocalDateTime.parse(current);
 		long hours = Duration.between(endDatets, currentDatets).toHours();
-		if(car.getEndDate().isBefore(currentDate) && hours < 1) {
-			actualRent = getRent(car.getBasePrice(), endDate, current);
-			//System.out.println("Actual rent will be "+(actualRent-car.getCarDeposit()));
-		}else {
+		
+		/*double fixedRent = getRent(car.getBasePrice(), startDate, endDate);
+		car.setCarRental(fixedRent);*/
+		
+		if(currentDate.isAfter(car.getEndDate())) {
 			System.out.println("You are "+hours+" hours late for returning car.");
 			System.out.println("You will be penalized with (2*"+ hours + "*" + car.getBasePrice() +") : RM" + (2*hours*car.getBasePrice()));
 			car.setPenalty(2*hours*car.getBasePrice());
+			lateRent = getRent(car.getBasePrice(), endDate, current);
+			car.setLateRent(lateRent);
 		}
-		
-		/*System.out.println("Enter rented car registration ID to return: ");
-		String inputCarID = scanner.nextLine();
-		if(inputCarID.equalsIgnoreCase(car.getRegID())) {
-			System.out.println("Confirm return car "+inputCarID+"? (Y/N)");
-			String ans = scanner.nextLine();
-			if(ans.equalsIgnoreCase("Y")) {
-				if(actualRent > 0) {
-					System.out.println("\n Amount to be paid = "+ (actualRent + car.getPenalty())) ;
-					System.out.println("Directing to payment gateway...");
-					System.out.println("You have successfully returned the car");
-					releaseCar(car);
-				}	
-				else {
-					System.out.println("\n Amount to be refunded = "+ (-actualRent));
-					System.out.println("The amount will be refunded to your input payment method in 3 working days");
-				}
-			}else if(ans.equalsIgnoreCase("N")) {
-				
-			}else {
-				System.out.println("Invalid input.");
-			}
-		
-		}
-		*/
 	}
 	
 	public void releaseCar(CarRegistration returnCar) throws Exception{
-
-		//Map <String,List<CarRegistration>> hiredCarMap = Utility.loadData();
-		Map <String,List<CarRegistration>> hiredCarMap = getHiredCars();
+		Map <String,List<CarRegistration>> hiredCarMap = Utility.loadData(); //need to load the cars
+		//Map <String,List<CarRegistration>> hiredCarMap = getHiredCars(); 
 		boolean noCar = true;
 		for(Map.Entry <String,List<CarRegistration>> set: hiredCarMap.entrySet()) {
 			String key = set.getKey();
@@ -103,6 +83,7 @@ public class CarRentalProcess {
 						car.setEndDate(null);
 						car.setCarRental(0);
 						car.setCarDeposit(0);
+						hiredCarMap.put(key, cars);
 					}
 					
 				}
@@ -110,11 +91,24 @@ public class CarRentalProcess {
 		}
 		Utility.storeData(hiredCarMap, "edit");
 	}
+	public String doAdminLogin() {
+		String result = "";
+		Admin adminCheck = new Admin();
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Enter admin email ID: ");
+		String adminEmail = scanner.nextLine();
+		System.out.println("Enter password: ");
+		String adminPass = scanner.nextLine();
+		if(adminCheck.isAdmin(adminEmail,adminPass)) {
+			result = adminEmail;
+		}
+		return result;
+	}
 	public void showHiredCars(String customerID) throws Exception{
 		Scanner scanner = new Scanner(System.in);
 		Map <String,List<CarRegistration>> hiredCarMap = Utility.loadData();
 		
-		boolean noCar = true;
+		boolean noCar = false;
 		List <CarRegistration> hiredCars = new ArrayList <CarRegistration> ();
 		for(Map.Entry <String,List<CarRegistration>> set: hiredCarMap.entrySet()) {
 			String key = set.getKey();
@@ -126,8 +120,7 @@ public class CarRentalProcess {
 						car.setDetails(true);
 						returnCar(car);
 						System.out.println(car);
-					}else {
-						noCar = false;
+						noCar = true;
 					}
 				}
 			}
@@ -140,15 +133,17 @@ public class CarRentalProcess {
 			String ans = scanner.nextLine();
 			if(ans.equalsIgnoreCase("Y")) {
 				CarRegistration car = hiredCarMap.get(inputCarID).get(0);
-				if(car != null && car.getActualRent() > 0) {
-					System.out.println("\n Amount to be paid = "+ (car.getActualRent() + car.getPenalty())) ;
+				if(car != null) {
+					double amount = car.getCarRental() + car.getPenalty() - car.getCarDeposit();	
+					if(amount>0)
+						System.out.println("\n Amount to be paid = "+ amount);
+					else {
+						System.out.println("\n Amount to be refunded = "+ (-1*(amount)));
+						System.out.println("The amount will be refunded to your input payment method in 3 working days");
+					}
 					System.out.println("Directing to payment gateway...");
 					System.out.println("You have successfully returned the car");
 					releaseCar(car);
-				}	
-				else {
-					System.out.println("\n Amount to be refunded = "+ (-car.getActualRent() ));
-					System.out.println("The amount will be refunded to your input payment method in 3 working days");
 				}
 			}else if(ans.equalsIgnoreCase("N")) {
 				
@@ -157,11 +152,11 @@ public class CarRentalProcess {
 			}
 		
 		}
-		}
-		if(noCar)
-			System.out.println("\t\t\t There is no hired car.");
-		
 	}
+		if(!noCar)
+			System.out.println("\t\t\t There is no hired car.");
+	}
+	
 	public boolean verifyCarByRegID(List<CarRegistration> cars, String regID) {
 		boolean carExist = false;
 		for(CarRegistration car : cars) {

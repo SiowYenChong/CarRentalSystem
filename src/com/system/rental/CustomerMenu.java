@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import com.system.model.CarRentalModel;
+import com.system.pojo.CarRegistration;
 import com.system.pojo.Customer;
 import com.system.util.SequenceGenerator;
 import com.system.util.Utility;
@@ -22,7 +23,21 @@ public class CustomerMenu
 		private String customerAddress;
 		private String customerPassword;
 		private String reenterPassword;
-
+		
+		public void showCustList() throws Exception{
+			Map<String, List<Customer>> custMap = Utility.loadCustData(System.getProperty("user.dir")+"/custData.txt");	
+			//Map <String,List<CarRegistration>> hiredCarMap = Utility.loadData(); //need to load the cars
+			boolean noCar = true;
+			for(Map.Entry <String,List<Customer>> set: custMap.entrySet()) {
+				String key = set.getKey();
+				List<Customer> custList = set.getValue();
+				if(!custList.isEmpty()) {
+					for(Customer cust : custList) {
+						System.out.println(cust);
+					}
+				}
+			}
+		}
 		public String customerRegistration(String emailID) throws Exception
 		{
 			//here
@@ -135,39 +150,6 @@ public class CustomerMenu
 
 		}
 		
-		/*
-		 * public void customerMenu() { Scanner scanner = new Scanner(System.in);
-		 * System.out.println("\nSelect option: ");
-		 * System.out.println("1. REGISTER CUSTOMER");
-		 * System.out.println("2. EDIT EXISTING CUSTOMER");
-		 * System.out.println("3. DELETE EXISITNG CUSTOMER"); int input =
-		 * scanner.nextInt();
-		 * 
-		 * 
-		 * if(input==1) { customerRegistration(null); }
-		 * 
-		 * else if(input==2) { editCustomer(); }
-		 * 
-		 * else if(input == 3) {
-		 * 
-		 * }
-		 * 
-		 * else { System.out.println("INVALID OPTION!"); } }
-		 */
-		
-		/*
-		 * public String editCustomer() { Scanner scanner = new Scanner(System.in);
-		 * Map<String, List<Customer>> map = CarRentalModel.user;
-		 * 
-		 * System.out.println("Enter Customer ID: "); String input = scanner.nextLine();
-		 * if(map.get(input) != null) { Customer obj = (Customer) map.get(input); //obj
-		 * = object System.out.println("Values are " + obj); editOption(input); }
-		 * 
-		 * else {
-		 * System.out.println("You have yet to register. Please kindly register."); }
-		 * 
-		 * return input; }
-		 */
 		
 		public void custEdit(String customerID,String msg) //msg=message
 		{		
@@ -179,34 +161,6 @@ public class CustomerMenu
 			
 		}
 		
-		/*
-		 * public void editOption(String customerID) { Scanner scanner = new
-		 * Scanner(System.in);
-		 * System.out.println("Select car properties to be edited: ");
-		 * System.out.println("1. Name"); System.out.println("2. DOB (dd/mm/yy)");
-		 * System.out.println("3. Mobile number"); System.out.println("4. Email");
-		 * System.out.println("5. Address"); System.out.println("6. Edit All");
-		 * 
-		 * int input = scanner.nextInt();
-		 * 
-		 * //Map<String, List<CarRegistration>> map = CarRentalModel.reg; Customer obj =
-		 * null;
-		 * 
-		 * String inputValue = ""; System.out.println("Customer ID"+customerID); do {
-		 * input=Input.inputInt("Select option: "); switch(input) { case 1:
-		 * //editCustomerName(customerID, obj); break; case 2:
-		 * editCustomerBirthDate(scanner, obj); break; case 3:
-		 * editCustomerMobileNumber(scanner, obj); break; case 4:
-		 * editCustomerEmail(scanner, obj); break; case 5: editCustomerAddress(scanner,
-		 * obj); break; case 6: //editCarRegNum(obj); editCustomerName(scanner, obj);
-		 * editCustomerBirthDate(scanner, obj); editCustomerMobileNumber(scanner, obj);
-		 * editCustomerEmail(scanner, obj); editCustomerAddress(scanner, obj); break;
-		 * default: System.out.println("INVALID OPTION!"); break; }
-		 * 
-		 * }while(true);
-		 * 
-		 * }
-		 */
 		public void getCustomerDetails() {
 			String adminUsername;
 			String adminPassword;
@@ -244,7 +198,7 @@ public class CustomerMenu
 				Utility.storeCustData(map);	
 				map.put(customerID, list);
 				if(flag) 
-					System.out.println("after edit map is "+map);
+					System.out.println("after edit map is "+map.get(customerID));
 			}else {
 				System.out.println("Customer ID doesnt exist.");
 			}
@@ -265,7 +219,7 @@ public class CustomerMenu
 					Utility.storeCustData(map);	
 					map.put(customerID, list);
 				if(flag) 
-					System.out.println("after edit map is "+map);
+					System.out.println("after edit map is "+map.get(customerID));
 			}else {
 				System.out.println("Customer ID doesnt exist.");
 			}
@@ -286,7 +240,7 @@ public class CustomerMenu
 				Utility.storeCustData(map);	
 				map.put(customerID, list);
 				if(flag)
-					System.out.println("after edit map is "+map);
+					System.out.println("after edit map is "+map.get(customerID));
 			}else {
 				System.out.println("Customer ID doesnt exist.");
 			}
@@ -307,7 +261,7 @@ public class CustomerMenu
 				Utility.storeCustData(map);	
 				map.put(customerID, list);
 				if(flag)
-					System.out.println("after edit map is "+map);
+					System.out.println("after edit map is "+map.get(customerID));
 			}else {
 				System.out.println("Customer ID doesnt exist.");
 			}
@@ -330,7 +284,7 @@ public class CustomerMenu
 				Utility.storeCustData(map);	
 				map.put(customerID, list);
 				if(flag)
-					System.out.println("after edit map is "+map);
+					System.out.println("after edit map is "+map.get(customerID));
 			}else {
 				System.out.println("Customer ID doesnt exist.");
 			}
@@ -347,7 +301,7 @@ public class CustomerMenu
 				editCustomerEmail(customerID, false);
 				editCustomerAddress(customerID, false);
 				Utility.storeCustData(map);	
-				System.out.println("after edit map is "+map);
+				System.out.println("after edit map is "+map.get(customerID));
 			}else {
 				System.out.println("Customer ID doesnt exist.");
 			}
@@ -398,6 +352,14 @@ public class CustomerMenu
 		 * scanner1.nextLine(); System.out.println("Reg ID"+regID); obj =
 		 * map.get(regID).get(0); obj.setCarBrand(inputValue); }
 		 */
+		public boolean validateCust(String custID1, String custID2) {
+			boolean result = true;
+			if(!custID1.equals(custID2)) {
+				result = false;
+				System.out.println("You are not allowed to edit "+custID2+" details");
+			}
+			return result;
+		}
 		public String getCustID(String msg) throws Exception
 		{
 			Scanner scanner = new Scanner(System.in);

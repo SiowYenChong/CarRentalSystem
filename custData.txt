@@ -1,2 +1,4 @@
 C001;Aiden;07/07/99;0129345678;aiden@gmail.com;Terengganu, Malaysia;aiden11
+A001;Admin 1;;0103636271;admin1@gmail.com;;admin1
 C002;Priya;08/10/96;0135345888;priya@gmail.com;Melaka, Malaysia;priya11
+C005;claire;;0123456789;claire@gmail.com;Selangor, Malaysia;claire1

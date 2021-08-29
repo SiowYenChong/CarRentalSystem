@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.text.SimpleDateFormat;		//Formatting date
+import java.time.Duration;
 import java.time.LocalDateTime;
 public class CarRegistration {
 
@@ -26,7 +27,15 @@ public class CarRegistration {
 	double carRental;	
 	double carDeposit;
 	double penalty;
-	double actualRent;
+	double lateRent;
+	double refund;
+	public double getRefund() {
+		double refund = 0.0;
+		double amount = getCarRental() + getPenalty() - getCarDeposit();
+		if(amount < 0) 
+			refund = amount;
+		return refund;
+	}
 	boolean details;
 	
 	public boolean isDetails() {	//equivalent getDetails
@@ -35,12 +44,11 @@ public class CarRegistration {
 	public void setDetails(boolean details) {
 		this.details = details;
 	}
-	public double getActualRent() {
-		double actualRent = this.getPenalty() + this.getCarRental() - this.getCarDeposit();
-		return actualRent;
+	public double getLateRent() {
+		return lateRent;
 	}
-	public void setActualRent(double actualRent) {
-		this.actualRent = actualRent;
+	public void setLateRent(double lateRent) {
+		this.lateRent = lateRent;
 	}
 	public double getPenalty() {
 		return penalty;
@@ -153,19 +161,22 @@ public class CarRegistration {
 	}
 	@Override
 	public String toString() {
-		
-		
+		if(getStartDate() != null && !"null".equals(getStartDate())) {
+			long hours = Duration.between(getStartDate(), getEndDate()).toHours();
+			System.out.println("Rental = " + getCarRental() + " Difference in hours = " + hours + " hours");
+		}
 		String hiredBy = (null != getUserID() && !"null".equals(getUserID()))? "Hired by = "+getUserID(): "";
 		String date = "";
 		String returnString = "";
-		if(this.getActualRent() > 0) 
-			returnString = "\n Amount to be paid = "+ (this.getActualRent());
-		if(this.getCarDeposit() > (this.getActualRent() + this.getPenalty()))
-			returnString = "\n Amount to be refunded = "+ (-this.getPenalty());
+		double amount = getCarRental() + getPenalty() - getCarDeposit();
+		if(amount > 0) 
+			returnString = "\n Amount to be paid = "+ (amount);
+		else
+			returnString = "\n Amount to be refunded = "+ (-1*(amount));
 		if(getStartDate() != null && !"null".equals(getStartDate())) {
 			date = "startDate = "+ formatDate(""+ getStartDate()) + ", endDate = " + formatDate(""+getEndDate()) + 
 					"\n deposit = "+ getCarDeposit() + 
-					"\n rent = " + this.getCarRental() +
+					"\n rent = " + getCarRental() +
 					returnString ;
 		}
 		String result = "regID = " +regID+ ", regNumber = " +regNumber+ ", carBrand = " + carBrand + 

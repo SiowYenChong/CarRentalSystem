@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import com.system.model.CarRentalModel;
 import com.system.pojo.Admin;
@@ -32,7 +33,7 @@ public class Utility {
 		boolean result = false;
 		System.out.println("Kindly enter your email..");	//prompt user to login first
 		String email = scanner.nextLine();
-		Map<String,Boolean> users = CarRentalModel.loginUsers;		
+		Map<String,Boolean> users = CarRentalModel.loginUsers;
 		if(users != null && users.get(email) == null) {		//map is not null, map not user id
 			System.out.println("You are not login. Kindly select option 1.");
 			result = true;
@@ -205,9 +206,25 @@ public class Utility {
 			Files.write(path, data.getBytes());		//getBytes() = convert data to byte
 		}
 	}
+	public static List<String> getCustEmail() throws Exception{
+		List<String> email = new ArrayList<String>();
+		Map<String, List<Customer>> map = loadCustData(System.getProperty("user.dir")+"/custData.txt");
+		String custID;
+		Customer cust = null;
+		boolean isExist = false; 
+		for(Map.Entry <String,List<Customer>> set: map.entrySet()) {
+			//System.out.println("Testing");
+			custID = set.getKey();
+			cust = set.getValue().get(0);
+			if(cust.getCustomerEmail() != null) {
+				email.add(cust.getCustomerEmail());
+			}
+		}
+		return email;
+	}
 	public static Customer getCustomer(String emailID) throws Exception{
 		loadCustData(System.getProperty("user.dir")+"/custData.txt");
-		Map<String, List<Customer>> map = CarRentalModel.user;
+		Map<String, List<Customer>> map =  CarRentalModel.user; //new LinkedHashMap<String, List<Customer>>();
 		String custID;
 		Customer cust = null;
 		boolean isExist = false; 
@@ -273,5 +290,14 @@ public class Utility {
 			}
 		}
 		return map;
+	}
+	public static boolean isValidEmail(String email) { 
+        /*String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+  "[a-zA-Z0-9_+&-]+)@" + 
+                            "(?:[a-zA-Z0-9-]+\\.)+[a-z" +  "A-Z]{2,7}$"; */
+        String email_pattern = "^[a-zA-Z0-9_#$%&’*+/=?^.-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        Pattern pat = Pattern.compile(email_pattern); 
+        if (email == null) 
+            return false; 
+        return pat.matcher(email).matches(); 
 	}
 }

@@ -1,5 +1,10 @@
 package com.system.pojo; //plain old java object
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 public class Customer 
 {
 	/*
@@ -103,7 +108,9 @@ public class Customer
 		for(int i = 0; i<getPassword().length(); i++) {
 			sb.append("*");
 		}
-		return "Customer [customerID = " + customerID + ", customerName = " + customerName + ", customerBirthDate = " + customerBirthDate
-				+ ", customerMobileNumber = " + customerMobileNumber + ", customerEmail = " + customerEmail + ", customerAddress = " + customerAddress +  ", password = "+ sb.toString() + "]";	  
+		return "Customer [customerID = " + customerID + ", customerName = " + customerName + ", customerBirthDate = " + customerBirthDate +
+			   ",\n\t customerMobileNumber = " + customerMobileNumber + ", customerEmail = " + customerEmail + ", customerAddress = " + customerAddress +  ", password = "+ sb.toString() + "]" + 
+			   "\n----------------------------------------------------------------------------------------------------------------------------------------------------------------";
+  
 	}
 }

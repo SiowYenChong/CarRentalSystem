@@ -18,10 +18,11 @@ import com.system.util.Utility;
 public class Main {
 	public static void displayMenu() {
 		System.out.println("WELCOME TO CAR RENTAL SYSTEM");
+		System.out.println("Press ctrl-z to exit existing function");
 		System.out.println("Options:");
-		System.out.println("1. Login");	//[done]
-		System.out.println("2. Main Menu"); //done
-		System.out.println("3. Register Customer"); //	[done - Sat]
+		System.out.println("1. Login");	
+		System.out.println("2. Main Menu"); 
+		System.out.println("3. Register Customer"); 
 		System.out.println("   31. Edit Customer Name");
 		System.out.println("   32. Edit Customer Birth Date");
 		System.out.println("   33. Edit Customer Mobile Number");
@@ -45,22 +46,19 @@ public class Main {
 		System.out.println("6. Return a Car");
 		System.out.println("7. Display customer details");
 	}
-	public static void main(String[] args)throws Exception {	//handling error
+	public static void main(String[] args) {	//handling error
 		int inputValue;
 		displayMenu();
-		    
 		String email = "";
-		//Utility.loadData(System.getProperty("user.dir")+"/inputData.txt");
-		//Utility.loadData();
-		//Utility.loadCustData(System.getProperty("user.dir")+"/custData.txt");
-		CarRegistrationMenu carObj = new CarRegistrationMenu();
 		String regID;
 		String custID;
-		CustomerMenu custObj = new CustomerMenu();
 		String loggedInCustomer;
+		try {
 		CarRentalProcess carRental = new CarRentalProcess();
 		Admin admin = new Admin();
+		CarRegistrationMenu carObj = new CarRegistrationMenu();
 		Customer cust = new Customer();
+		CustomerMenu custObj = new CustomerMenu();
 		do {
 			inputValue=Input.inputInt("Select option (Press 2 - View menu): ");
 			switch(inputValue) {
@@ -73,19 +71,16 @@ public class Main {
 				displayMenu();
 				break;
 			case 3:
-				loggedInCustomer = Utility.validUser(email);
-				cust = Utility.getCustomer(loggedInCustomer);
+				//loggedInCustomer = Utility.validUser(email);
+				//cust = Utility.getCustomer(loggedInCustomer);
 				//System.out.print("REGISTER CUSTOMER");
-				if(!"".equals(loggedInCustomer)) {
-					custID = custObj.customerRegistration(email);
-				}
+				custID = custObj.customerRegistration(email);
 				break;
 			case 31:
 				loggedInCustomer = Utility.validUser(email);		//check if user login
 				if(!"".equals(loggedInCustomer))
 					System.out.println("EDIT EXISTING CUSTOMER NAME");
-				//regID = carObj.getRegID();
-				loggedInCustomer = Utility.validUser(email);		//check if user login
+				cust = Utility.getCustomer(loggedInCustomer);
 				if(!"".equals(loggedInCustomer) && !custObj.checkCustomerList()) {
 					custID = custObj.getCustID("edit");
 					if(custObj.validateCust(cust.getCustomerID(), custID))
@@ -405,10 +400,12 @@ public class Main {
 				System.out.println("LOGOUT");
 				break;
 			default:
-				System.out.println("INVALID OPTION!");
 				break;
 			}
 		}while(true);
+		}catch(Exception e) {
+			System.out.println("Car Rental System has encountered some error " + e.getMessage());
+		}
 	}
 	
 	
